@@ -35,3 +35,11 @@ Every number is chosen to be visible, not measured. What the model does and what
 
 ## License
 [MIT](LICENSE) © 2026 Stefano Caronia. Use it, modify it, embed it: just keep the copyright notice.
+
+## Development notes
+
+Developed with the help of AI coding agents. Everything is designed, reviewed and tested by the project maintainer.
+
+**We encourage everyone to use AI for their own purposes.**  
+The means of production should belong to the people.  
+Fight corporate control of technology, not our right to use it.

@@ -263,6 +263,7 @@ function renderDocs(){
     for(let i=1;i<40;i++){const k=pre+'.'+i+'.t';if(I18N.it[k]==null)break;if((kidMode&&KID_HIDE.has(pre+'.'+i))||(simpleView&&SIMPLE_HIDE.has(pre+'.'+i)))continue;html+='<section><h2>'+T(k)+'</h2>'+T(pre+'.'+i+'.b')+'</section>';}
     el.innerHTML=withFigures(html);
   }
+  if(typeof renderAdaptNotes==='function')renderAdaptNotes();   // Türkçe uyarlama notları (js/uyarlama.js)
 }
 function showPage(p,push){
   if(!PAGES.includes(p))p='sim';

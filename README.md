@@ -1,3 +1,9 @@
+# Dopamin Simülatörü (Türkçe uyarlama)
+
+> Bu depo, Stefano Caronia'nın [Dopamine Simulator](https://github.com/stefanocaronia/dopamine-simulator) çalışmasının Türkçe uyarlamasıdır (MIT). Neyin değiştiği: [UYARLAMA.md](UYARLAMA.md). Aşağıdaki metin özgün README'dir.
+
+---
+
 # Dopamine Simulator
 
 An interactive, educational simulation of a dopamine synapse. Watch dopamine get released, bind its receptors, get pulled back, recycled or destroyed, and see how a neurotypical and an ADHD synapse differ. Then play with sleep, caffeine, medication, exercise, easy rewards and substances.

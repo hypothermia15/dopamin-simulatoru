@@ -4,6 +4,7 @@
    L'italiano è la lingua sorgente; se una chiave manca si usa l'inglese, poi l'italiano.
    Per aggiungere una lingua: dizionario in i18n/, <script> in index.html, voce in LANG_META, simbolo #flag-xx nello sprite SVG. */
 const LANG_META=[
+  {code:'tr',name:'Türkçe',locale:'tr-TR',dir:'ltr'},
   {code:'it',name:'Italiano',locale:'it-IT',dir:'ltr'},
   {code:'en',name:'English',locale:'en-GB',dir:'ltr'},
   {code:'es',name:'Español',locale:'es-ES',dir:'ltr'},
@@ -18,7 +19,7 @@ const LANG_META=[
 ];
 const LANGS=LANG_META.map(l=>l.code);
 const LOCALE=Object.fromEntries(LANG_META.map(l=>[l.code,l.locale]));
-let lang='it';
+let lang='tr';   // Türkçe uyarlama: varsayılan dil Türkçe
 // Modalità ragazzi: i testi possono avere una variante <chiave>@kid (niente sostanze, esempi adatti); la attiva ui.js
 let kidMode=false;
 // Vista semplificata: stesso modello, per chi non sa di chimica. Sullo schermo spariscono COMT, VMAT2, MAO e le scie;
@@ -98,7 +99,7 @@ function detectKid(){
   let q=null,saved=null;
   try{q=new URLSearchParams(location.search).get('kid');}catch(e){}
   try{saved=localStorage.getItem('dopa.kid');}catch(e){}
-  kidMode=q!=null?(q==='1'||q==='true'):saved==='1';
+  kidMode=q!=null?(q==='1'||q==='true'):saved!=='0';   // Türkçe uyarlama: ilk açılışta Çocuk modu açık, kapatan kişinin seçimi saklanır
 }
 function detectSimple(){
   let q=null,saved=null;
@@ -113,8 +114,7 @@ function detectLang(){
   let q=null,saved=null;
   try{q=new URLSearchParams(location.search).get('lang');}catch(e){}
   try{saved=localStorage.getItem('dopa.lang');}catch(e){}
-  const nav=String(navigator.language||'it').slice(0,2).toLowerCase();
-  lang=[q,saved,nav].find(l=>l&&I18N[l])||'it';
+  lang=[q,saved].find(l=>l&&I18N[l])||'tr';   // Türkçe uyarlama: tarayıcı dili yerine Türkçe; ?lang=xx ya da menü ile değişir
 }
 function buildLangMenu(){
   const ul=$('lang-menu');if(!ul)return;

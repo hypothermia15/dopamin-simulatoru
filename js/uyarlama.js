@@ -11,12 +11,12 @@ const ADAPT={
   mechTitle:'🩺 Uyarlayanın notları',
   mech:[
     ['DEHB bir “dopamin eksikliği” değildir.','DEHB’de dopamin sisteminin rolünü destekleyen bulgular vardır, ama bulgular çalışmadan çalışmaya değişir ve noradrenalin gibi başka sistemler de işin içindedir. Tanı beyin görüntülemesiyle ya da bir reseptör sayımıyla konmaz: gelişim öyküsüne, belirtilerin farklı ortamlardaki görünümüne ve klinik değerlendirmeye dayanır. Simülasyondaki “az reseptör, çok taşıyıcı” tablosu tek bir varsayımın büyütülmüş hâlidir.'],
-    ['İlaç kararı ekranda verilmez.','Simülasyonda metilfenidat düğmesine basınca nöronlar saniyeler içinde yanar. Gerçekte yanıtın büyüklüğü, uygun doz ve yan etkiler kişiden kişiye değişir; ilaca başlama, doz ayarı ve izlem hekimin işidir. Buradaki sayılar klinik yanıtı öngörmez.'],
+    ['İlaç kararı ekranda verilmez.','Simülasyonda metilfenidat düğmesine basınca nöronlar saniyeler içinde yanar. Gerçekte yanıtın büyüklüğü, uygun doz ve yan etkiler kişiden kişiye değişir. Ilaca başlama, doz ayarı ve izlem hekimin işidir. Buradaki sayılar klinik yanıtı öngörmez.'],
     ['Kafein ve egzersiz tedavi değildir.','İkisi de burada bir düzeneği göstermek için vardır. Düzenli uyku ve hareket herkes için değerlidir, ama simülasyondaki etkileri DEHB tedavisinin yerine geçecek bir kanıt saymayın. Kafein düğmesi çocuklara kafein önerisi olarak okunmamalıdır.'],
-    ['“Kolay ödüller” bölümü bir benzetmedir.','Ekran kullanımıyla reseptör azalması arasındaki ilişki, simülasyonun gösterdiği kadar kesin ve hızlı değildir; özgün yazar da bunu “Model ve gerçeklik” sayfasında zamanlaması ve genliği abartılmış olarak işaretler. Çocuğunuzun ekran kullanımıyla ilgili bir kaygınız varsa bunu simülasyonla değil, onu tanıyan bir uzmanla değerlendirin.']
+    ['“Kolay ödüller” bölümü bir benzetmedir.','Ekran kullanımıyla reseptör azalması arasındaki ilişki, simülasyonun gösterdiği kadar kesin ve hızlı değildir. Özgün yazar da bunu “Model ve gerçeklik” sayfasında zamanlaması ve genliği abartılmış olarak işaretler. Çocuğunuzun ekran kullanımıyla ilgili bir kaygınız varsa bunu onu tanıyan bir uzmanla değerlendirin.']
   ],
-  subMech:'Maddeler bölümü yalnızca dopamin düzeneğini anlatır; zararların bütününü göstermez ve kullanım için bir ölçü vermez.',
-  src:'Bu sayfa, Stefano Caronia’nın MIT lisanslı <a href="https://github.com/stefanocaronia/dopamine-simulator" target="_blank" rel="noopener">Dopamine Simulator</a> çalışmasının (v3.8) Türkçe uyarlamasıdır. Model ve sayılar değiştirilmedi; çeviri, notlar ve varsayılan ayarlar (Türkçe, Çocuk modu) uyarlayana aittir. Notlardaki görüşler özgün yazarı bağlamaz.'
+  subMech:'Maddeler bölümü yalnızca dopamin düzeneğini anlatır. Zararların bütününü göstermez ve kullanım için bir ölçü vermez.',
+  src:'Bu sayfa, Stefano Caronia’nın MIT lisanslı <a href="https://github.com/stefanocaronia/dopamine-simulator" target="_blank" rel="noopener">Dopamine Simulator</a> çalışmasının (v3.8) Türkçe uyarlamasıdır. Model ve sayılar değiştirilmedi. Çeviri, notlar ve varsayılan ayarlar (Türkçe, Çocuk modu) uyarlayana aittir. Notlardaki görüşler özgün yazarı bağlamaz.'
 };
 function renderAdaptNotes(){
   const tr=lang==='tr';

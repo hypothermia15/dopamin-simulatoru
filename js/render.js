@@ -216,8 +216,9 @@ function drawPostCells(){
     if(r.occupied)blit(sOcc,1,0,.9);
     ctx.beginPath();ctx.arc(2,0,5.5,-Math.PI/2,Math.PI/2);
     ctx.moveTo(2,-5.5);ctx.lineTo(-2.5,-5.5);ctx.moveTo(2,5.5);ctx.lineTo(-2.5,5.5);
-    ctx.strokeStyle=r.occupied?C.dopa:flash>.1?`rgba(0,255,136,${Math.min(1,flash)})`:C.d2;
+    ctx.strokeStyle=r.drug?C[r.drug]:r.occupied?C.dopa:flash>.1?`rgba(0,255,136,${Math.min(1,flash)})`:C.d2;
     ctx.lineWidth=r.occupied?2.5:1.8;ctx.stroke();
+    if(r.drug){ctx.fillStyle=C[r.drug];ctx.globalAlpha=r.drug==='ari'?.75:1;ctx.fillRect(-1.5,-3,5,6);ctx.globalAlpha=1;}   // recettore occupato dal farmaco (adattamento turco)
     if(r.occupied){ctx.beginPath();ctx.arc(1.5,0,2.6,0,6.283);ctx.fillStyle=C.dopa;ctx.fill();}
     ctx.restore();
   }

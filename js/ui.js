@@ -42,11 +42,11 @@ function buildToasts(){
   if(caffeineActive)list.push({key:'caff',c:C.caff,t:T('t.caff.t'),s:T('u.sec',{n:Math.ceil(caffeineTimer)}),
     b:depleted?T('t.caff.depleted'):T('t.caff.b')+(sleepDebt>0.3?T('t.caff.sleep',{real,perc}):'')});
   else if(caffEndTimer>0)list.push({key:'caffend',c:C.caff,t:T('t.caffend.t'),b:T('t.caffend.b',{real,perc:Math.round(sleepDebt*CAFF_DEBT_MASK*100)})});
-  if(mphActive)list.push({key:'mph',c:C.mph,t:T('t.mph.t'),s:T('u.sec',{n:Math.ceil(mphTimer)}),b:depleted?T('t.mph.depleted'):T('t.mph.b',{trend:trendText()})});
+  if(mphActive)list.push({key:'mph',c:C.mph,t:T('t.mph.t'),s:T('u.sec',{n:Math.ceil(mphTimer)})+(mphDose!==1?' · '+T('mphdose.'+mphDose):''),b:depleted?T('t.mph.depleted'):T('t.mph.b',{trend:trendText()})});
   else if(mphRebound>0)list.push({key:'mphre',c:C.tol,t:T('t.mphre.t'),s:T('u.sec',{n:Math.ceil(mphRebound)}),b:T('t.mphre.b')});
   // Farmaci dell'adattamento turco
-  for(const k of ['mphx','atx','gua','aps']){const m=meds[k];
-    if(m.t>0)list.push({key:k,c:C[k],t:T('t.'+k+'.t'),s:T('u.sec',{n:Math.ceil(m.t)})+(k==='aps'?' · '+T('u.d2',{rec:effectiveD2(),full:baseD2()}):''),b:T('t.'+k+'.b')});}
+  for(const k of ['mphx','atx','gua','aps','ari']){const m=meds[k];
+    if(m.t>0)list.push({key:k,c:C[k],t:T('t.'+k+'.t'),s:T('u.sec',{n:Math.ceil(m.t)})+(k==='aps'||k==='ari'?' · '+T('u.d2free',{rec:freeD2(),full:effectiveD2()}):''),b:T('t.'+k+'.b')});}
   if(mphxRebound>0&&meds.mphx.t<=0)list.push({key:'mphxre',c:C.tol,t:T('t.mphre.t'),s:T('u.sec',{n:Math.ceil(mphxRebound)}),b:T('t.mphre.b')});
   // Sostanze: mentre l'effetto dura, accanto al tempo si vedono i D2 che scendono
   for(const k of ['nic','can','alc','coc','met']){const s=subst[k];
@@ -131,6 +131,8 @@ const TIPS={
   atx:()=>({t:T('tip.atx.t'),c:C.atx,b:T('tip.atx.b')}),
   gua:()=>({t:T('tip.gua.t'),c:C.gua,b:T('tip.gua.b')}),
   aps:()=>({t:T('tip.aps.t'),c:C.aps,b:T('tip.aps.b')}),
+  ari:()=>({t:T('tip.ari.t'),c:C.ari,b:T('tip.ari.b')}),
+  mphdose:()=>({t:T('tip.mphdose.t'),c:C.mph,b:T('tip.mphdose.b')}),
   scroll:()=>({t:T('tip.scroll.t'),c:C.scroll,b:T('tip.scroll.b',{sens:Math.round(d2Sens*100)})}),
   exercise:()=>({t:T('tip.exercise.t'),c:C.exer,b:T('tip.exercise.b')}),
   sleep:()=>({t:T('tip.sleep.t'),c:C.sleep,b:T('tip.sleep.b')}),
@@ -199,7 +201,8 @@ function updateHUD(){
   setWidth('serbatoio-fill',pct+'%');setText('serbatoio-pct',pct+'%');
   setWidth('caff-fill',(caffeineActive?Math.max(0,caffeineTimer/CAFF_DUR*100).toFixed(1):0)+'%');
   setWidth('mph-fill',(mphActive?Math.max(0,mphTimer/MPH_DUR*100).toFixed(1):0)+'%');
-  for(const k of ['mphx','atx','gua','aps'])setWidth(k+'-fill',(meds[k].t>0?(meds[k].t/MEDS[k].dur*100).toFixed(1):0)+'%');
+  {const dv=$('mphdose-val'),dt=T('mphdose.'+mphDose);if(dv&&dv.textContent!==dt)dv.textContent=dt;}
+  for(const k of ['mphx','atx','gua','aps','ari'])setWidth(k+'-fill',(meds[k].t>0?(meds[k].t/MEDS[k].dur*100).toFixed(1):0)+'%');
   setWidth('exer-fill',(exerciseActive?Math.max(0,exerciseTimer/EXER_DUR*100).toFixed(1):0)+'%');
   // Barra del sonno: parte piena = debito percepito, parte tratteggiata = quota mascherata dalla caffeina
   const perc=perceivedDebt()*100,real=sleepDebt*100;
@@ -258,7 +261,7 @@ function setKidMode(on){
   try{const u=new URL(location.href);if(kidMode)u.searchParams.set('kid','1');else u.searchParams.delete('kid');history.replaceState(null,'',u.pathname+u.search+u.hash);}catch(e){}
   setAge(kidMode?KID_AGE:AGE_REF);
   const ageEl=$('age');ageEl.value=age;$('age-val').textContent=age;syncRange(ageEl,age,5,100);
-  if(kidMode){for(const k in meds)meds[k].t=0;mphxRebound=0;}
+  if(kidMode){for(const k in meds)meds[k].t=0;mphxRebound=0;setMphDose(1);const de=$('mphdose');if(de){de.value=1;syncRange(de,1,0,2);}}
   if(kidMode)for(const k in subst){subst[k].t=0;subst[k].after=0;}   // niente sostanze attive quando si passa ai ragazzi
   saveSettings();applyI18n();updateHUD();
 }
@@ -318,7 +321,8 @@ function initUI(){
   });
   $('btn-caffeine').addEventListener('click',startCaffeine);
   $('btn-mph').addEventListener('click',startMph);
-  for(const k of ['mphx','atx','gua','aps'])$('btn-'+k).addEventListener('click',()=>startMed(k));
+  for(const k of ['mphx','atx','gua','aps','ari'])$('btn-'+k).addEventListener('click',()=>startMed(k));
+  {const de=$('mphdose');syncRange(de,mphDose,0,2);de.addEventListener('input',e=>{setMphDose(+e.target.value);syncRange(de,mphDose,0,2);});}
   $('btn-scroll').addEventListener('click',toggleScroll);
   for(const k of ['nic','can','alc','coc','met'])$('btn-'+k).addEventListener('click',()=>startSubst(k));
   const ageEl=$('age');

@@ -56,6 +56,19 @@ Dosyalar: `js/model.js` (`MEDS`, `meds`, `medLevel()`, `startMed()`, beş işlev
 
 Doğrulanmayanlar: kaynakların yalnızca PubMed özetleri okundu, tam metinler okunmadı. Saniye cinsinden süreler gerçek farmakokinetiğin ölçeği değildir.
 
+## 24 Kasım 2026: aripiprazol, metilfenidat doz ayarı ve antipsikotik düzeltmesi
+
+**Düzeltme.** Aynı gün eklenen antipsikotik düğmesi ilk hâlinde reseptör sayısını azaltıyordu. Ölçümde bunun nöron yanıtını neredeyse hiç değiştirmediği görüldü (%50 uyaranda yanıt 0,90'dan 0,93'e), çünkü modelde dopamin molekülleri boş reseptöre yönelir. Düğme metni ise yanıtın azaldığını söylüyordu. Düzenek değiştirildi: reseptörler yerinde kalır, bir bölümü ilaçla işgal edilir (`r.drug`), işgal edilmiş reseptöre ulaşan molekül sinyal vermeden geri seker. Yeni ölçüm: aynı koşulda yanıt 0,90'dan 0,18'e iner. `effectiveD2()` özgün hâline döndürüldü.
+
+| Ek | Modeldeki karşılığı | Kaynakta olan | Uyarlayanın seçtiği (temsili) |
+|---|---|---|---|
+| Aripiprazol (`ari`) | D2'lerin %85'i 90 sn işgal edilir. İşgal edilmiş reseptörler dopaminden bağımsız zayıf sinyal üretir (bağlanma başına sinyalin %30'u). Ölçüm, nörotipik: %5 uyaranda yanıt 0,08'den 0,19'a çıkar, %90 uyaranda 0,99'dan 0,62'ye iner. | Kısmi agonist, dopamine göre etkinlik %25-90 (Burris 2002, doi:10.1124/jpet.102.033175; yazarlar BMS çalışanı). 15 sağlıklı erkekte işgal %40-95, %90 üzerinde EPS yok (Yokoi 2002, doi:10.1016/S0893-133X(02)00304-4). | %85 işgal, %30 içsel etkinlik (kaynak aralığının alt ucuna yakın), sinyal sıklığı (`tone`), süre. `tone` değeri "az dopaminde artış, çok dopaminde azalış" görülecek biçimde ayarlandı, kaynaktan türetilmedi. Sinyal sıklığı reseptör sayısına değil işgal oranına bağlandı. 5-HT1A ve 5-HT2A etkileri, akatizi modellenmedi. |
+| Metilfenidat dozu (`MPH_DOSE`, `mphDose`) | Düşük: blokaj %40, hız ×0,7, uyku ×1,2, geri tepme ×1,15. Orta: özgün değerler (%85, ×0,3, ×1,5, ×1,3). Yüksek: %90, ×0,25, uyku ×2, geri tepme ×1,5, eşik ×1,2. | DAT işgali 5 mg %12, 10 mg %40, 20 mg %54, 40 mg %72, 60 mg %74 (Volkow 1998, doi:10.1176/ajp.155.10.1325; 7 sağlıklı erişkin). Sıçanda düşük doz PFK'de NA ve DA'yı artırır (Berridge 2006, doi:10.1016/j.biopsych.2006.04.022); yalnızca düşük doz PFK nöron yanıt verirliğini artırır, yüksek doz baskılar (Devilbiss ve Berridge 2008, doi:10.1016/j.biopsych.2008.04.037). | Düşük ayarın %40'ı Volkow'un 10 mg değeridir. Özgün modelin %85'i Volkow'un ölçtüğü en yüksek değerin (%74) üzerindedir, bu yüzden ayarlar mg karşılığı değildir. Yüksek ayardaki bütün ek maliyetler temsilidir. Sıçan PFK bulgusu çocuklardaki klinik doz yanıtına aktarılamaz. |
+
+Ölçülen sonuç (DEHB modu, %20 uyaran, 55 sn): ilaçsız 0,11; düşük 0,32; orta 0,34; yüksek 0,15. Ters U biçimi yüksek ayara eklenen temsili eşik ve uyku değerlerinden doğar.
+
+Dosyalar: `js/model.js` (`MEDS.ari`, `MPH_DOSE`, `syncDrugReceptors()`, `freeD2()`, `setMphDose()`), `js/render.js`, `js/ui.js`, `index.html`, `css/style.css`, `i18n/*.js` (13 yeni anahtar, `t.aps.b` yeniden yazıldı), `js/uyarlama.js`, `tests/run.js` (toplam 148 denetim).
+
 ## Kaynaklar
 
 "Model ve gerçeklik" sayfasındaki on kaynak özgün yazarın seçimidir. Künyeleri (dergi, yıl, cilt, ilk sayfa, ilk yazar) Kasım 2026'da PubMed kayıtlarıyla eşleştirildi; metinlerdeki sayısal aktarımlar tek tek kaynak makalelerle karşılaştırılmadı.

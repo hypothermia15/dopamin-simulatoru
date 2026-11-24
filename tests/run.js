@@ -16,7 +16,7 @@ const sandbox={console,performance,Math:Object.assign(Object.create(Math),{rando
 vm.createContext(sandbox);
 for(const f of ['js/util.js','js/model.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),sandbox,{filename:f});
 const G=expr=>vm.runInContext(expr,sandbox);   // evaluate inside the model's scope
-const M=G('({setGeometry,resetSim,setMode,setAge,setStimulus,setSpeed,update,startCaffeine,startMph,startExercise,toggleScroll,startSubst,startMed,thresholdNow,releaseMult,datBlock,datSpeedMult,threshMult,sleepMult,synthMult,supply,ageFactor,effectiveD2,baseD2,baseD2Of,passPct})');
+const M=G('({setGeometry,resetSim,setMode,setAge,setStimulus,setSpeed,update,startCaffeine,startMph,startExercise,toggleScroll,startSubst,startMed,setMphDose,thresholdNow,releaseMult,datBlock,datSpeedMult,threshMult,sleepMult,synthMult,supply,ageFactor,effectiveD2,baseD2,baseD2Of,passPct})');
 M.setGeometry(1000,520);
 
 // ── helpers ──
@@ -176,7 +176,7 @@ ok('at full stimulus the passed share reaches 100',G('passPct()')===100,G('passP
 
 // ── F. invariants after a long mixed run ──
 section('F. invariants');
-reset({stim:0.5,speed:2});M.startCaffeine();M.startMph();M.startExercise();M.toggleScroll();for(const k of ['nic','can','alc','coc','met'])M.startSubst(k);for(const k of ['mphx','atx','gua','aps'])M.startMed(k);run(60);M.toggleScroll();run(60);s=S();
+reset({stim:0.5,speed:2});M.startCaffeine();M.startMph();M.startExercise();M.toggleScroll();for(const k of ['nic','can','alc','coc','met'])M.startSubst(k);for(const k of ['mphx','atx','gua','aps','ari'])M.startMed(k);run(60);M.toggleScroll();run(60);s=S();
 const finite=Object.values(s).every(v=>typeof v!=='number'||Number.isFinite(v));
 ok('no NaN/Infinity in the state',finite);ok('particles within MAX_P',s.parts<=G('MAX_P'),s.parts);ok('reserve within 0..100',s.ves>=0&&s.ves<=100,fmt(s.ves));ok('D2 sensitivity within 0.3..1',s.sens>=0.3&&s.sens<=1,fmt(s.sens));ok('sleep debt within 0..1',s.debt>=0&&s.debt<=1,fmt(s.debt));ok('counters non-negative',[s.total,s.fires,s.misses,s.comt,s.lost,s.maob].every(v=>v>=0));
 
@@ -225,6 +225,23 @@ reset({mode:'adhd',stim:0.1});run(5);M.startMed('mphx');run(2);s=S();ok('extende
 G('meds.mphx.t=0.1;');run(1);s=S();within('extended-release methylphenidate: milder rebound x1.15',s.dsp,1.14,1.16);
 reset({mode:'adhd',stim:0.1});run(5);M.startMed('atx');run(10);s=S();ok('atomoxetine: slow rise (below full after 10 s)',s.block>0.03&&s.block<0.15,fmt(s.block));run(40);s=S();within('atomoxetine: reuptake block 35%',s.block,0.34,0.36);
 reset({stim:0.1});run(5);M.startMed('gua');run(25);s=S();const thrOn=s.thr;within('guanfacine: no DAT1 block',s.block,0,0.001);within('guanfacine: threshold multiplier x0.85',G('threshMult()'),0.84,0.86);G('meds.gua.t=0;');within('guanfacine: threshold x0.85 against the same state without it',thrOn/S().thr,0.84,0.86);
-reset({stim:0.3});run(5);const d2a=S().d2;M.startMed('aps');run(10);s=S();ok('antipsychotic: about 70% of D2 occupied',s.d2<=Math.round(d2a*0.3)+1&&s.d2>=2,`${s.d2} of ${d2a}`);ok('antipsychotic: sensitivity itself unchanged',s.sens>0.99,fmt(s.sens));G('meds.aps.t=0.1;');run(1);s=S();ok('antipsychotic ends: D2 back',s.d2===d2a,`${s.d2} of ${d2a}`);
+reset({stim:0.5});run(15);const actBase=run(40),d2a=S().d2;
+reset({stim:0.5});M.startMed('aps');run(15);s=S();ok('antipsychotic: 8 of 12 D2 occupied, 4 free',G('freeD2()')===4&&G('receptors.filter(r=>r.ni===0&&r.drug==="aps").length')===8,`${G('freeD2()')} free`);ok('antipsychotic: receptor count and sensitivity unchanged',s.d2===d2a&&s.sens>0.99,`${s.d2} of ${d2a}`);
+G('MEDS.aps.dur=9999;meds.aps.t=9990;');const actAps=run(40);G('MEDS.aps.dur=60;');ok('antipsychotic: neurons respond clearly less at the same stimulus',actAps<actBase*0.5,`${fmt(actAps)} against ${fmt(actBase)}`);
+G('meds.aps.t=0.1;');run(1);ok('antipsychotic ends: all receptors free again',G('freeD2()')===d2a&&G('receptors.every(r=>!r.drug)'),`${G('freeD2()')} of ${d2a}`);
+// aripiprazole (partial agonist): more response when dopamine is scarce, less when it is plentiful
+function actWith(stim,med){reset({stim});if(med){G(`MEDS.${med}.dur=9999;`);M.startMed(med);}run(15);const a=run(60);if(med)G(`MEDS.${med}.dur=${med==='ari'?90:60};`);return a;}
+const lo0=actWith(0.05),loA=actWith(0.05,'ari'),hi0=actWith(0.9),hiA=actWith(0.9,'ari');
+ok('aripiprazole: raises the response at a very low stimulus',loA>lo0+0.05,`${fmt(loA)} against ${fmt(lo0)}`);
+ok('aripiprazole: lowers the response at a high stimulus',hiA<hi0-0.2,`${fmt(hiA)} against ${fmt(hi0)}`);
+ok('aripiprazole: flatter than no medicine (smaller low-to-high gap)',(hiA-loA)<(hi0-lo0)*0.7,`${fmt(hiA-loA)} against ${fmt(hi0-lo0)}`);
+reset({stim:0.3});M.startMed('ari');run(12);ok('aripiprazole: 10 of 12 D2 occupied',G('receptors.filter(r=>r.ni===0&&r.drug==="ari").length')===10&&G('freeD2()')===2,`${G('freeD2()')} free`);
+M.startMed('aps');run(8);ok('aripiprazole plus antipsychotic: one receptor always stays free',G('freeD2()')>=1,`${G('freeD2()')} free`);
+// methylphenidate dose (1 = the original model's values)
+reset({mode:'adhd',stim:0.1});run(3);const thrD=G('threshMult()');
+M.setMphDose(0);M.startMph();run(1);within('methylphenidate low dose: DAT1 block 40%',S().block,0.39,0.41);
+M.setMphDose(1);within('methylphenidate medium dose: the original 85%',S().block,0.84,0.86);within('methylphenidate medium dose: threshold untouched',G('threshMult()')/thrD,0.999,1.001);
+M.setMphDose(2);within('methylphenidate high dose: DAT1 block 90%',S().block,0.89,0.91);within('methylphenidate high dose: threshold x1.2',G('threshMult()')/thrD,1.19,1.21);within('methylphenidate high dose: sleep debt x2',G('sleepMult()'),1.99,2.01);
+M.setMphDose(7);ok('dose is clamped to 0..2',G('mphDose')===2,String(G('mphDose')));M.setMphDose(1);
 console.log(`\n${checks-fails}/${checks} checks passed (seed ${seed}${verbose?'':', --verbose for every measurement'})`);
 process.exit(fails?1:0);

@@ -84,9 +84,17 @@ const MEDS={
   mphx:{dur:75,ramp:10,datBlock:0.70,datSlow:0.4,sleep:1.5,rebDur:15,rebSpeed:1.15},
   atx:{dur:90,ramp:45,datBlock:0.35,datSlow:0.7},
   gua:{dur:90,ramp:20,thresh:0.85},
-  aps:{dur:60,ramp:5,d2Block:0.70}
+  aps:{dur:60,ramp:5,d2Block:0.70},
+  // ari = aripiprazolo (agonista parziale): occupa i D2 e li stimola in parte; tone = eventi/s per neurone a occupazione piena, scalati sulla quota di recettori occupati
+  ari:{dur:90,ramp:10,d2Occ:0.85,intrinsic:0.3,tone:9.6}
 };
-const C={dopa:'#00ff88',dead:'#ff3355',dat:'#aa55ff',comt:'#ff8833',vmat:'#3388dd',d2:'#ffcc00',active:'#00e5ff',recept:'#ffe27a',ap:'#ffe27a',snap:'#7aa8ff',cleft:'#8fa3bb',adhd:'#ff8833',caff:'#e07a2f',mph:'#ff5fa8',exer:'#3cb371',sleep:'#8e6fd1',scroll:'#9ecbff',tol:'#8a9bb5',age:'#e6c07b',stimLow:'#7fb8ff',stimHigh:'#ffb347',nic:'#d4b46a',can:'#9be36f',alc:'#c96f8f',coc:'#dfe9ff',met:'#5ad1c8',mphx:'#ff9ad0',atx:'#7fb8ff',gua:'#b9a2ff',aps:'#ffd27a'};
+// Dose del metilfenidato a rilascio immediato (adattamento turco): 1 = valori dell'originale; 0 e 2 illustrativi
+const MPH_DOSE=[
+  {block:0.40,slow:0.7,sleep:1.2,reb:1.15,thresh:1},
+  {block:MPH_BLOCK,slow:MPH_SLOW,sleep:MPH_SLEEP_MULT,reb:MPH_REBOUND_SPEED,thresh:1},
+  {block:0.90,slow:0.25,sleep:2.0,reb:1.5,thresh:1.2}
+];
+const C={dopa:'#00ff88',dead:'#ff3355',dat:'#aa55ff',comt:'#ff8833',vmat:'#3388dd',d2:'#ffcc00',active:'#00e5ff',recept:'#ffe27a',ap:'#ffe27a',snap:'#7aa8ff',cleft:'#8fa3bb',adhd:'#ff8833',caff:'#e07a2f',mph:'#ff5fa8',exer:'#3cb371',sleep:'#8e6fd1',scroll:'#9ecbff',tol:'#8a9bb5',age:'#e6c07b',stimLow:'#7fb8ff',stimHigh:'#ffb347',nic:'#d4b46a',can:'#9be36f',alc:'#c96f8f',coc:'#dfe9ff',met:'#5ad1c8',mphx:'#ff9ad0',atx:'#7fb8ff',gua:'#b9a2ff',aps:'#ffd27a',ari:'#ff8f6b'};
 
 // ───────────────────────── Stato ─────────────────────────
 let mode='normal',stimulus=0.10,speedMul=2,paused=false;
@@ -97,7 +105,7 @@ let caffeineTimer=0,caffeineActive=false,caffEndTimer=0,mphTimer=0,mphActive=fal
 let scrollActive=false,scrollAccum=0,scrollOnAt=0,d2Sens=1,effD2=null;   // scrollOnAt: istante (now) dell'accensione; d2Sens: sensibilità/densità dei D2 (1 = normale)
 let age=AGE_REF;
 let subst={nic:{t:0,after:0},can:{t:0,after:0},alc:{t:0,after:0},coc:{t:0,after:0},met:{t:0,after:0}};
-let meds={mphx:{t:0},atx:{t:0},gua:{t:0},aps:{t:0}},mphxRebound=0;   // farmaci dell'adattamento: t = secondi rimasti   // t: effetto attivo, after: effetto successivo (secondi reali)
+let meds={mphx:{t:0},atx:{t:0},gua:{t:0},aps:{t:0},ari:{t:0}},mphxRebound=0,mphDose=1,drugKey='',drugAri=0,drugAps=0;   // farmaci dell'adattamento: t = secondi rimasti   // t: effetto attivo, after: effetto successivo (secondi reali)
 // Tassi mostrati: contati in una finestra di 0,5 s reali e divisi per il tempo simulato trascorso (rateSim), quindi
 // per secondo simulato, coerenti con i numeri dei testi (3 Hz, 30/s) a qualunque velocità; impulsi e raffiche con media mobile
 let rateWindow=0,rateSim=0,rateRelCount=0,rateReabCount=0,rateDeadCount=0,rateSpikeCount=0,rateBurstCount=0,rateFireCount=0,rateMissCount=0,rateLostCount=0,displayRelRate=0,displayReabRate=0,displayDeadRate=0,displaySpikeRate=0,displayBurstRate=0,displayFireRate=0,displayLostRate=0,relEma=0,reabEma=0,deadEma=0,lostEma=0,spikeEma=0,burstEma=0,fireEma=0,missEma=0;
@@ -175,9 +183,24 @@ function rebuildReceptors(){
   const cfg=MODES[mode];receptors=[];
   const recX=CLEFT.x+CLEFT.w+4;
   postNeurons.forEach((n,ni)=>{const c=effectiveD2(),sp=n.h/(c+1),sc=Math.min(1,sp/12);   // sc: scala del glifo su schermi piccoli
-    for(let j=0;j<c;j++)receptors.push({x:recX,y:n.y+sp*(j+1),ni,sc,occupied:false,particle:null,cooldown:0});
+    for(let j=0;j<c;j++)receptors.push({x:recX,y:n.y+sp*(j+1),ni,j,sc,occupied:false,particle:null,cooldown:0,drug:null});
   });
+  drugKey='';syncDrugReceptors();
 }
+// Farmaci che occupano i D2 (adattamento turco): i recettori restano disegnati ma sono occupati dal farmaco.
+// Una molecola di dopamina che ne tocca uno rimbalza senza dare segnale. Resta sempre almeno un recettore libero per neurone.
+function syncDrugReceptors(){
+  const c=effectiveD2();
+  let a=Math.floor(c*MEDS.ari.d2Occ*medLevel('ari')+1e-9);a=Math.min(a,c-1);
+  let b=Math.floor(c*MEDS.aps.d2Block*medLevel('aps')+1e-9);b=Math.min(b,c-1-a);
+  const key=c+'|'+a+'|'+b;if(key===drugKey)return;drugKey=key;drugAri=a;drugAps=b;
+  const order=[];for(let j=0;j<c;j++)order.push(j);order.sort((x,y)=>((x*0.618034)%1)-((y*0.618034)%1));
+  const rank=[];order.forEach((j,i)=>rank[j]=i);
+  for(const r of receptors){const k=rank[r.j],d=k<a?'ari':k<a+b?'aps':null;
+    if(d&&r.particle){r.particle.state='free';r.particle.timer=0;r.particle.immune=0.4;r.particle=null;r.occupied=false;}
+    r.drug=d;}
+}
+function freeD2(){return effectiveD2()-drugAri-drugAps;}
 
 // COMT: eat = tempo residuo dell'animazione "inghiotte", eaten = molecole mangiate (numerino sotto l'enzima)
 function rebuildComts(){
@@ -249,17 +272,17 @@ function perceivedDebt(){return sleepDebt*(caffeineActive?CAFF_DEBT_MASK:1);}
 function ageFactor(){return age<AGE_REF?1+0.01*(AGE_REF-age):Math.max(0.5,1-0.06*(age-AGE_REF)/10);}
 function baseD2(){return baseD2Of(mode);}
 function baseD2Of(m){return Math.max(2,Math.round(MODES[m].d2Count*ageFactor()));}   // D2 di partenza di un cervello all'età corrente
-function effectiveD2(){return Math.max(2,Math.round(MODES[mode].d2Count*ageFactor()*d2Sens*(1-MEDS.aps.d2Block*medLevel('aps'))));}
+function effectiveD2(){return Math.max(2,Math.round(MODES[mode].d2Count*ageFactor()*d2Sens));}
 // Livello di un farmaco dell'adattamento (0..1): sale in `ramp` secondi dall'assunzione, poi resta pieno fino alla fine
 function medLevel(k){const m=meds[k];return m.t>0?Math.min(1,(MEDS[k].dur-m.t)/MEDS[k].ramp):0;}
 // Sostanze: composizione degli effetti (attivi e successivi) sui parametri del modello
 const sAct=k=>subst[k].t>0,sAft=k=>subst[k].t<=0&&subst[k].after>0;
 function substBoost(){let b=0;for(const k in subst)if(sAct(k))b+=SUBST[k].boost;return b;}
 function releaseMult(){return (caffeineActive?CAFF_RELEASE:1)*(sAct('nic')?SUBST.nic.release:sAft('nic')?SUBST.nic.afterRelease:1)*(sAct('can')?SUBST.can.release:1)*(sAct('alc')?SUBST.alc.release:1);}
-function datBlock(){return Math.max(mphActive?MPH_BLOCK:0,sAct('coc')?SUBST.coc.datBlock:0,sAct('met')?SUBST.met.datBlock:0,MEDS.mphx.datBlock*medLevel('mphx'),MEDS.atx.datBlock*medLevel('atx'));}
-function datSpeedMult(){let m=1;if(mphActive)m*=MPH_SLOW;if(sAct('coc'))m*=SUBST.coc.datSlow;if(sAct('met'))m*=SUBST.met.datSlow;if(mphRebound>0)m*=MPH_REBOUND_SPEED;if(sAft('coc'))m*=SUBST.coc.afterDat;m*=1-(1-MEDS.mphx.datSlow)*medLevel('mphx');m*=1-(1-MEDS.atx.datSlow)*medLevel('atx');if(mphxRebound>0)m*=MEDS.mphx.rebSpeed;return m;}
-function threshMult(){return (sAft('alc')?SUBST.alc.afterThresh:1)*(sAft('coc')?SUBST.coc.afterThresh:1)*(sAft('met')?SUBST.met.afterThresh:1)*(1-(1-MEDS.gua.thresh)*medLevel('gua'));}
-function sleepMult(){let m=mphActive?MPH_SLEEP_MULT:1;if(sAct('nic'))m*=SUBST.nic.sleep;if(sAct('alc')||sAft('alc'))m*=SUBST.alc.sleep;if(sAct('coc'))m*=SUBST.coc.sleep;if(sAct('met'))m*=SUBST.met.sleep;m*=1+(MEDS.mphx.sleep-1)*medLevel('mphx');return m;}
+function datBlock(){return Math.max(mphActive?MPH_DOSE[mphDose].block:0,sAct('coc')?SUBST.coc.datBlock:0,sAct('met')?SUBST.met.datBlock:0,MEDS.mphx.datBlock*medLevel('mphx'),MEDS.atx.datBlock*medLevel('atx'));}
+function datSpeedMult(){let m=1;if(mphActive)m*=MPH_DOSE[mphDose].slow;if(sAct('coc'))m*=SUBST.coc.datSlow;if(sAct('met'))m*=SUBST.met.datSlow;if(mphRebound>0)m*=MPH_DOSE[mphDose].reb;if(sAft('coc'))m*=SUBST.coc.afterDat;m*=1-(1-MEDS.mphx.datSlow)*medLevel('mphx');m*=1-(1-MEDS.atx.datSlow)*medLevel('atx');if(mphxRebound>0)m*=MEDS.mphx.rebSpeed;return m;}
+function threshMult(){return (sAft('alc')?SUBST.alc.afterThresh:1)*(sAft('coc')?SUBST.coc.afterThresh:1)*(sAft('met')?SUBST.met.afterThresh:1)*(1-(1-MEDS.gua.thresh)*medLevel('gua'))*(mphActive?MPH_DOSE[mphDose].thresh:1);}
+function sleepMult(){let m=mphActive?MPH_DOSE[mphDose].sleep:1;if(sAct('nic'))m*=SUBST.nic.sleep;if(sAct('alc')||sAft('alc'))m*=SUBST.alc.sleep;if(sAct('coc'))m*=SUBST.coc.sleep;if(sAct('met'))m*=SUBST.met.sleep;m*=1+(MEDS.mphx.sleep-1)*medLevel('mphx');return m;}
 function synthMult(){return sAft('can')?SUBST.can.afterSynth:1;}
 // Quota di rilascio ancora possibile con la riserva che scende (1 sopra il 20%, poi lineare fino a 0)
 function supply(){return Math.min(1,(vesCount/MAX_VES)/DEPLETE_FROM);}
@@ -349,7 +372,7 @@ function update(dt){
   for(const k in subst)if(subst[k].t>0)desens+=SUBST[k].des*dt;
   if(desens>0)d2Sens=Math.max(D2_SENS_MIN,d2Sens-desens);
   else if(d2Sens<1)d2Sens=Math.min(1,d2Sens+SCROLL_RECOVER*sdt);
-  const eff=effectiveD2();if(eff!==effD2){effD2=eff;rebuildReceptors();}   // i recettori spariscono/ricompaiono con la tolleranza
+  const eff=effectiveD2();if(eff!==effD2){effD2=eff;rebuildReceptors();}else syncDrugReceptors();   // i recettori spariscono/ricompaiono con la tolleranza
 
   // Potenziali d'azione lungo l'assone: viaggiano in tempo simulato e, arrivati al terminale, fondono le loro vescicole
   const apEnd=TERM.xJ+PRE.w*.18;
@@ -435,6 +458,7 @@ function update(dt){
   for(const r of receptors){if(r.cooldown>0){r.cooldown-=sdt;continue;}if(r.occupied)continue;
     for(const p of particles){if(p.state!=='free'||p.immune>0)continue;
       if(Math.hypot(p.x-r.x,p.y-r.y)<BIND_DIST){
+        if(r.drug){p.vx=-CLEFT.w*4;p.vy=(Math.random()-.5)*CLEFT.w;p.immune=0.4;r.cooldown=0.12;stats.blocked=(stats.blocked||0)+1;break;}   // recettore occupato dal farmaco: rimbalzo senza segnale
         r.occupied=true;r.particle=p;p.state='bound';p.x=r.x;p.y=r.y;p.timer=0;
         postNeurons[r.ni].signal+=SIGNAL_PER_BIND;stats.binds++;
         if(pulses.length<60)pulses.push({x:r.x,y:r.y,ni:r.ni,age:0});
@@ -445,6 +469,7 @@ function update(dt){
 
   for(const n of postNeurons){
     // Il debito di sonno alza la soglia e accorcia l'emivita del segnale
+    if(drugAri>0&&Math.random()<MEDS.ari.tone*(drugAri/effectiveD2())*sdt)n.signal+=SIGNAL_PER_BIND*MEDS.ari.intrinsic;   // stimolo parziale dell'aripiprazolo, indipendente dalla dopamina
     n.signal*=Math.pow(0.5,sdt/halfLifeNow());
     const was=n.active;
     n.active=n.signal>=thresholdNow();
@@ -566,6 +591,7 @@ function toggleScroll(){scrollActive=!scrollActive;if(scrollActive)scrollOnAt=no
 // Una dose di sostanza: parte l'effetto; i D2 si consumano gradualmente mentre dura (vedi SUBST[k].des in update).
 // Se l'effetto è già attivo, la dose lo riporta alla durata piena e annulla l'effetto successivo in attesa
 function startSubst(k){const s=subst[k];if(!s)return;s.t=SUBST[k].dur;s.after=0;}
+function setMphDose(d){mphDose=Math.max(0,Math.min(2,Math.round(d)));}
 function startMed(k){const m=meds[k];if(!m)return;m.t=MEDS[k].dur;if(k==='mphx')mphxRebound=0;}
 function setAge(a){age=Math.max(AGE_MIN,Math.min(AGE_MAX,Math.round(a)));effD2=null;}
 function startExercise(){exerciseTimer=EXER_DUR;exerciseActive=true;}

@@ -30,6 +30,7 @@ I18N.ko={
   'btn.can':'<i>🌿</i><span>대마</span><small>약한 방출, 이후 느린 합성</small>',
   'btn.alc':'<i>🍷</i><span>알코올</span><small>방출 증가, 이후 숙취</small>',
   'btn.coc':'<i>❄️</i><span>코카인</span><small>DAT1 차단, 이후 크래시</small>',
+  'btn.met':'<i>🧪</i><span>Methamphetamine</span><small>long effect, then withdrawal</small>',
   'leg.dopa':'도파민','leg.dead':'파괴됨','leg.dat1':'DAT1 (재흡수)',
 'leg.dat1@simple':'재흡수','leg.comt':'COMT (효소)','leg.vmat2':'VMAT2 (재활용)','leg.maob':'MAO (분해)','leg.d2':'D2 수용체','leg.active':'수용 상태 뉴런','leg.fire':'발화하는 뉴런',
   'pause.title':'일시정지 / 재개 (스페이스바)',
@@ -153,6 +154,10 @@ I18N.ko={
   't.coc.b':'<p><i class="c-dat">DAT1</i>을 20초 동안 <b>95%</b> 차단합니다. 치료약보다 훨씬 강합니다: 도파민이 틈에 넘쳐나고 뉴런이 모두 켜집니다. 지속되는 동안 <b>D2가 급감하고</b>(단 한 번 사용에 −50%) 수면 부채는 ×2로 달립니다.</p>',
   't.coc.after.t':'❄️ 코카인 크래시',
   't.coc.after.b':'<p>DAT1이 ×1.5로 다시 움직이고 역치는 20초 동안 30% 올라갑니다: 도파민이 무너지고 모든 것이 잿빛으로 보입니다. 이것이 크래시입니다. 사용할 때마다 D2가 소모되니 "평소"의 기준은 점점 더 내려갑니다.</p>',
+  't.met.t':'🧪 Methamphetamine',
+  't.met.b':'<p>Acts on the monoamine transporters: here it blocks the <i class="c-dat">DAT1</i> at <b>60%</b> and adds a release that does not depend on the stimulus, for 40 s. While it lasts the <b>D2 wear down</b> (−50% in a single dose) and sleep debt races at ×2.</p>',
+  't.met.after.t':'🧪 Methamphetamine withdrawal',
+  't.met.after.b':'<p>The threshold rises by 30% for 40 s: low mood, anxiety and poor sleep. In people the acute phase of withdrawal typically lasts 7 to 10 days.</p>',
 
   // 툴팁
   'tip.dat1.t':'DAT1 · 도파민 수송체',
@@ -241,6 +246,8 @@ I18N.ko={
   'tip.alc.b':'<p>복측 피개 영역의 브레이크를 풀어<adv>(GABA-A, 내인성 오피오이드)</adv> 측좌핵의 도파민 방출을 늘립니다: <b>30초</b> 동안 추가 방출(+9/초).</p><p>시뮬레이션한 비용: 역치 +20%가 30초 이어지는 <b>숙취</b>, 효과 중과 그 뒤의 수면 부채 ×1.3(알코올은 수면을 조각냅니다), 지속되는 동안 <b>D2 −0.8%/초</b>(한 번 사용에 −24%). 시뮬레이션하지 않은 것: 진정 작용, 협응, 간.</p>',
   'tip.coc.t':'❄️ 코카인',
   'tip.coc.b':'<p>DAT(그리고 노르아드레날린과 세로토닌 수송체)을 메틸페니데이트보다 훨씬 높고 빠르게 점유해 차단합니다: 여기서는 <b>20초</b> 동안 <b>95%</b>이며, 틈에 남은 도파민이 쌓입니다(+14/초).</p><p>시뮬레이션한 비용: <b>크래시</b>(20초 동안 DAT1 ×1.5, 역치 +30%), 수면 부채 ×2, 지속되는 동안 <b>D2 −2.5%/초</b>(한 번 사용에 −50%)로 이 시뮬레이션에서 가장 빠른 내성입니다. 시뮬레이션하지 않은 것: 심장, 혈압, 급성 위험, 심리적 의존.</p>',
+  'tip.met.t':'🧪 Methamphetamine',
+  'tip.met.b':'<p>Added in the Turkish adaptation, not part of the original simulator. Mean elimination half-life is about <b>10 hours</b>, so the effect in this simulation lasts <b>40 s</b>, twice as long as the simulated cocaine. Higher doses can produce psychosis.</p><p>Simulated costs: <b>withdrawal</b> (threshold +30% for 40 s), sleep debt ×2, <b>−1.25%/s of D2</b> while it lasts (−50% per dose). The size of the extra release and of the block are illustrative. Not simulated: psychosis, heart and blood pressure, neurotoxicity.</p>',
 
   // 인포그래픽 (js/figures.js)
   'fig.brain.mid':'중뇌','fig.brain.mid2':'소수의 도파민 뉴런','fig.brain.str':'선조체','fig.brain.str2':'운동, 보상, 습관','fig.brain.pfc':'전전두엽 피질','fig.brain.pfc2':'주의, 계획',

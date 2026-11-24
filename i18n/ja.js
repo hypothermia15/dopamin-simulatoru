@@ -30,6 +30,7 @@ I18N.ja={
   'btn.can':'<i>🌿</i><span>大麻</span><small>放出は控えめ、その後は合成が低下</small>',
   'btn.alc':'<i>🍷</i><span>アルコール</span><small>放出アップ、その後は二日酔い</small>',
   'btn.coc':'<i>❄️</i><span>コカイン</span><small>DAT1 を遮断、その後クラッシュ</small>',
+  'btn.met':'<i>🧪</i><span>Methamphetamine</span><small>long effect, then withdrawal</small>',
   'leg.dopa':'ドーパミン','leg.dead':'分解済み','leg.dat1':'DAT1（再取り込み）',
 'leg.dat1@simple':'再取り込み','leg.comt':'COMT（酵素）','leg.vmat2':'VMAT2（再利用）','leg.maob':'MAO（分解）','leg.d2':'D2 受容体','leg.active':'受容状態のニューロン','leg.fire':'発火するニューロン',
   'pause.title':'一時停止 / 再開（スペースキー）',
@@ -153,6 +154,10 @@ I18N.ja={
   't.coc.b':'<p><i class="c-dat">DAT1</i> を 20 秒間 <b>95%</b> 遮断します。治療薬よりはるかに強力で、ドーパミンが間隙にあふれ、ニューロンはすべて点灯します。そのあいだ <b>D2 は急落</b>し（たった 1 回で −50%）、睡眠負債は ×2 で進みます。</p>',
   't.coc.after.t':'❄️ コカインのクラッシュ',
   't.coc.after.b':'<p>DAT1 が ×1.5 で再始動し、閾値は 20 秒間 30% 上がります：ドーパミンは急落し、すべてが灰色に見えます。これがクラッシュです。1 回ごとに D2 が減るため、「普通」の位置はどんどん下がっていきます。</p>',
+  't.met.t':'🧪 Methamphetamine',
+  't.met.b':'<p>Acts on the monoamine transporters: here it blocks the <i class="c-dat">DAT1</i> at <b>60%</b> and adds a release that does not depend on the stimulus, for 40 s. While it lasts the <b>D2 wear down</b> (−50% in a single dose) and sleep debt races at ×2.</p>',
+  't.met.after.t':'🧪 Methamphetamine withdrawal',
+  't.met.after.b':'<p>The threshold rises by 30% for 40 s: low mood, anxiety and poor sleep. In people the acute phase of withdrawal typically lasts 7 to 10 days.</p>',
 
   // ツールチップ
   'tip.dat1.t':'DAT1 · ドーパミントランスポーター',
@@ -241,6 +246,8 @@ I18N.ja={
   'tip.alc.b':'<p>腹側被蓋野のブレーキを外して<adv>（GABA-A、内因性オピオイド）</adv>、側坐核でのドーパミン放出を増やします：<b>30 秒</b>のあいだ放出が上乗せされます（+9/秒）。</p><p>シミュレートしたコスト：<b>二日酔い</b>で 30 秒間 閾値 +20%、効果中と効果後の睡眠負債 ×1.3（アルコールは睡眠を分断します）、効果が続くあいだ <b>D2 が −0.8%/秒</b>（1 回あたり −24%）。未シミュレート：鎮静、運動の協調、肝臓。</p>',
   'tip.coc.t':'❄️ コカイン',
   'tip.coc.b':'<p>DAT（およびノルアドレナリンとセロトニンのトランスポーター）を、メチルフェニデートよりはるかに高く、はるかに速く占有して遮断します：ここでは <b>20 秒</b>のあいだ <b>95%</b>、間隙に残ったドーパミンがどんどん溜まります（+14/秒）。</p><p>シミュレートしたコスト：<b>クラッシュ</b>（20 秒間 DAT1 ×1.5、閾値 +30%）、睡眠負債 ×2、効果が続くあいだ <b>D2 が −2.5%/秒</b>（1 回あたり −50%）：このシミュレーションで最も速い耐性です。未シミュレート：心臓、血圧、急性のリスク、精神的な依存。</p>',
+  'tip.met.t':'🧪 Methamphetamine',
+  'tip.met.b':'<p>Added in the Turkish adaptation, not part of the original simulator. Mean elimination half-life is about <b>10 hours</b>, so the effect in this simulation lasts <b>40 s</b>, twice as long as the simulated cocaine. Higher doses can produce psychosis.</p><p>Simulated costs: <b>withdrawal</b> (threshold +30% for 40 s), sleep debt ×2, <b>−1.25%/s of D2</b> while it lasts (−50% per dose). The size of the extra release and of the block are illustrative. Not simulated: psychosis, heart and blood pressure, neurotoxicity.</p>',
 
   // インフォグラフィック（js/figures.js）
   'fig.brain.mid':'中脳','fig.brain.mid2':'ドーパミンニューロンはごく少数','fig.brain.str':'線条体','fig.brain.str2':'運動・報酬・習慣','fig.brain.pfc':'前頭前皮質','fig.brain.pfc2':'注意・計画',

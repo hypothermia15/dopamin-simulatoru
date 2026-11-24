@@ -87,6 +87,10 @@ reset({stim:0.1});run(5);M.startSubst('coc');run(10);s=S();within('cocaine: DAT1
 run(9);s=S();within('cocaine: D2 sensitivity after a dose (-50%)',s.sens,0.45,0.56);
 G('subst.coc.t=0.1;');run(1);s=S();within('cocaine crash: DAT1 speed x1.5',s.dsp,1.49,1.51);within('cocaine crash: threshold x1.3',G('threshMult()'),1.29,1.31);
 M.startSubst('coc');const t=G('subst.coc.t');ok('re-dosing restarts the effect (20 s)',t>19.9&&G('subst.coc.after')===0,fmt(t));
+// methamphetamine: added in the Turkish adaptation (illustrative values)
+reset({stim:0.1});run(5);M.startSubst('met');run(10);s=S();within('methamphetamine: DAT1 block 60%',s.block,0.59,0.61);within('methamphetamine: DAT1 speed x0.5',s.dsp,0.49,0.51);within('methamphetamine: sleep debt x2',G('sleepMult()'),1.99,2.01);
+run(29);s=S();within('methamphetamine: D2 sensitivity after a dose (-50%)',s.sens,0.45,0.56);
+G('subst.met.t=0.1;');run(1);s=S();within('methamphetamine withdrawal: threshold x1.3',G('threshMult()'),1.29,1.31);within('methamphetamine withdrawal: DAT1 speed back to x1',s.dsp,0.99,1.01);
 
 // ── D. state: sleep, brain, age, sleep debt, depletion, time scale ──
 section('D. state');
@@ -172,7 +176,7 @@ ok('at full stimulus the passed share reaches 100',G('passPct()')===100,G('passP
 
 // ── F. invariants after a long mixed run ──
 section('F. invariants');
-reset({stim:0.5,speed:2});M.startCaffeine();M.startMph();M.startExercise();M.toggleScroll();for(const k of ['nic','can','alc','coc'])M.startSubst(k);run(60);M.toggleScroll();run(60);s=S();
+reset({stim:0.5,speed:2});M.startCaffeine();M.startMph();M.startExercise();M.toggleScroll();for(const k of ['nic','can','alc','coc','met'])M.startSubst(k);run(60);M.toggleScroll();run(60);s=S();
 const finite=Object.values(s).every(v=>typeof v!=='number'||Number.isFinite(v));
 ok('no NaN/Infinity in the state',finite);ok('particles within MAX_P',s.parts<=G('MAX_P'),s.parts);ok('reserve within 0..100',s.ves>=0&&s.ves<=100,fmt(s.ves));ok('D2 sensitivity within 0.3..1',s.sens>=0.3&&s.sens<=1,fmt(s.sens));ok('sleep debt within 0..1',s.debt>=0&&s.debt<=1,fmt(s.debt));ok('counters non-negative',[s.total,s.fires,s.misses,s.comt,s.lost,s.maob].every(v=>v>=0));
 

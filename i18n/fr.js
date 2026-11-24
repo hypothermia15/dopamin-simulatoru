@@ -30,6 +30,7 @@ I18N.fr={
   'btn.can':'<i>🌿</i><span>Cannabis</span><small>libération légère, synthèse lente</small>',
   'btn.alc':'<i>🍷</i><span>Alcool</span><small>plus de libération, puis gueule de bois</small>',
   'btn.coc':'<i>❄️</i><span>Cocaïne</span><small>DAT1 bloqués, puis crash</small>',
+  'btn.met':'<i>🧪</i><span>Methamphetamine</span><small>long effect, then withdrawal</small>',
   'leg.dopa':'Dopamine','leg.dead':'Détruite','leg.dat1':'DAT1 (recapture)',
 'leg.dat1@simple':'Recapture','leg.comt':'COMT (enzyme)','leg.vmat2':'VMAT2 (recyclage)','leg.maob':'MAO (dégrade)','leg.d2':'Récepteur D2','leg.active':'Neurone réceptif','leg.fire':'Neurone qui décharge',
   'pause.title':'Pause / reprendre (barre d\'espace)',
@@ -151,6 +152,10 @@ I18N.fr={
   't.coc.b':'<p>Bloque les <i class="c-dat">DAT1</i> à <b>95 %</b> pendant 20 s, bien plus que le médicament : la dopamine inonde la fente et tous les neurones s\'allument. Pendant l\'effet, les <b>D2 s\'effondrent</b> (−50 % en une seule dose) et la dette de sommeil file à ×2.</p>',
   't.coc.after.t':'❄️ Crash de cocaïne',
   't.coc.after.b':'<p>Les DAT1 repartent à ×1,5 et le seuil monte de 30 % pendant 20 s : la dopamine s\'effondre et tout paraît gris. C\'est le crash ; avec les D2 consommés à chaque dose, le « normal » est toujours plus bas.</p>',
+  't.met.t':'🧪 Methamphetamine',
+  't.met.b':'<p>Acts on the monoamine transporters: here it blocks the <i class="c-dat">DAT1</i> at <b>60%</b> and adds a release that does not depend on the stimulus, for 40 s. While it lasts the <b>D2 wear down</b> (−50% in a single dose) and sleep debt races at ×2.</p>',
+  't.met.after.t':'🧪 Methamphetamine withdrawal',
+  't.met.after.b':'<p>The threshold rises by 30% for 40 s: low mood, anxiety and poor sleep. In people the acute phase of withdrawal typically lasts 7 to 10 days.</p>',
 
   'tip.dat1.t':'DAT1 · transporteur de la dopamine',
   'tip.dat1.t@simple':'Pompe de recapture',
@@ -238,6 +243,8 @@ I18N.fr={
   'tip.alc.b':'<p>Augmente la libération de dopamine dans le noyau accumbens en lâchant le frein de l\'aire tegmentale ventrale<adv> (GABA-A, opioïdes endogènes)</adv> : libération supplémentaire (+9/s) pendant <b>30 s</b>.</p><p>Coûts simulés : <b>gueule de bois</b> avec seuil +20 % pendant 30 s, dette de sommeil ×1,3 pendant et après (l\'alcool fragmente le sommeil), <b>−0,8 %/s de D2</b> pendant l\'effet (−24 % par dose). Non simulés : sédation, coordination, foie.</p>',
   'tip.coc.t':'❄️ Cocaïne',
   'tip.coc.b':'<p>Bloque le DAT (et les transporteurs de la noradrénaline et de la sérotonine) avec une occupation bien plus élevée et rapide que le méthylphénidate : ici <b>95 %</b> pendant <b>20 s</b>, et la dopamine qui reste dans la fente s\'accumule (+14/s).</p><p>Coûts simulés : <b>crash</b> (DAT1 ×1,5 et seuil +30 % pendant 20 s), dette de sommeil ×2, <b>−2,5 %/s de D2</b> pendant l\'effet (−50 % par dose) : l\'accoutumance la plus rapide de la simulation. Non simulés : cœur, tension, risque aigu, dépendance psychologique.</p>',
+  'tip.met.t':'🧪 Methamphetamine',
+  'tip.met.b':'<p>Added in the Turkish adaptation, not part of the original simulator. Mean elimination half-life is about <b>10 hours</b>, so the effect in this simulation lasts <b>40 s</b>, twice as long as the simulated cocaine. Higher doses can produce psychosis.</p><p>Simulated costs: <b>withdrawal</b> (threshold +30% for 40 s), sleep debt ×2, <b>−1.25%/s of D2</b> while it lasts (−50% per dose). The size of the extra release and of the block are illustrative. Not simulated: psychosis, heart and blood pressure, neurotoxicity.</p>',
 
   'fig.brain.mid':'Mésencéphale','fig.brain.mid2':'quelques neurones dopaminergiques','fig.brain.str':'Striatum','fig.brain.str2':'mouvement, récompense, habitudes','fig.brain.pfc':'Cortex préfrontal','fig.brain.pfc2':'attention, planification',
   'fig.pre':'NEURONE DOPAMINERGIQUE','fig.post':'NEURONE RÉCEPTEUR',

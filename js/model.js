@@ -66,14 +66,16 @@ function activityNow(){const v=Math.round(stimulus*100);return ACTIVITIES.find(a
 // boost = rilascio aggiunto in molecole/s indipendente dallo stimolo (le droghe agiscono anche a riposo);
 // release = moltiplicatore del rilascio guidato dallo stimolo (le ricompense facili aggiungono ~12 rilasci/s).
 // des = desensibilizzazione dei D2 al secondo mentre l'effetto dura: la riduzione dei recettori è graduale,
-// non un salto per dose. Totale per dose = des × dur (nic 20%, can 16%, alc 24%, coc 50%).
+// non un salto per dose. Totale per dose = des × dur (nic 20%, can 16%, alc 24%, coc 50%, met 50%).
+// met (metanfetamina): aggiunta nell'adattamento turco (2026-11-24), non presente nell'originale; valori illustrativi.
 const SUBST={
   nic:{dur:20,after:15,boost:10,release:1.30,afterRelease:0.85,des:0.010,sleep:1.2},
   can:{dur:40,after:60,boost:6,release:1.15,afterSynth:0.7,des:0.004,sleep:1.0},
   alc:{dur:30,after:30,boost:9,release:1.25,afterThresh:1.2,des:0.008,sleep:1.3},
-  coc:{dur:20,after:20,boost:14,release:1.0,datBlock:0.95,datSlow:0.3,afterDat:1.5,afterThresh:1.3,des:0.025,sleep:2.0}
+  coc:{dur:20,after:20,boost:14,release:1.0,datBlock:0.95,datSlow:0.3,afterDat:1.5,afterThresh:1.3,des:0.025,sleep:2.0},
+  met:{dur:40,after:40,boost:18,release:1.0,datBlock:0.60,datSlow:0.5,afterThresh:1.3,des:0.0125,sleep:2.0}
 };
-const C={dopa:'#00ff88',dead:'#ff3355',dat:'#aa55ff',comt:'#ff8833',vmat:'#3388dd',d2:'#ffcc00',active:'#00e5ff',recept:'#ffe27a',ap:'#ffe27a',snap:'#7aa8ff',cleft:'#8fa3bb',adhd:'#ff8833',caff:'#e07a2f',mph:'#ff5fa8',exer:'#3cb371',sleep:'#8e6fd1',scroll:'#9ecbff',tol:'#8a9bb5',age:'#e6c07b',stimLow:'#7fb8ff',stimHigh:'#ffb347',nic:'#d4b46a',can:'#9be36f',alc:'#c96f8f',coc:'#dfe9ff'};
+const C={dopa:'#00ff88',dead:'#ff3355',dat:'#aa55ff',comt:'#ff8833',vmat:'#3388dd',d2:'#ffcc00',active:'#00e5ff',recept:'#ffe27a',ap:'#ffe27a',snap:'#7aa8ff',cleft:'#8fa3bb',adhd:'#ff8833',caff:'#e07a2f',mph:'#ff5fa8',exer:'#3cb371',sleep:'#8e6fd1',scroll:'#9ecbff',tol:'#8a9bb5',age:'#e6c07b',stimLow:'#7fb8ff',stimHigh:'#ffb347',nic:'#d4b46a',can:'#9be36f',alc:'#c96f8f',coc:'#dfe9ff',met:'#5ad1c8'};
 
 // ───────────────────────── Stato ─────────────────────────
 let mode='normal',stimulus=0.10,speedMul=2,paused=false;
@@ -83,7 +85,7 @@ let W=0,H=0,PRE={},CLEFT={},POST={},SNAP={},VMAT_Z={},MAO_Z={},TERM={};
 let caffeineTimer=0,caffeineActive=false,caffEndTimer=0,mphTimer=0,mphActive=false,mphRebound=0,exerciseTimer=0,exerciseActive=false,sleepDebt=0,sleepToastTimer=0;
 let scrollActive=false,scrollAccum=0,scrollOnAt=0,d2Sens=1,effD2=null;   // scrollOnAt: istante (now) dell'accensione; d2Sens: sensibilità/densità dei D2 (1 = normale)
 let age=AGE_REF;
-let subst={nic:{t:0,after:0},can:{t:0,after:0},alc:{t:0,after:0},coc:{t:0,after:0}};   // t: effetto attivo, after: effetto successivo (secondi reali)
+let subst={nic:{t:0,after:0},can:{t:0,after:0},alc:{t:0,after:0},coc:{t:0,after:0},met:{t:0,after:0}};   // t: effetto attivo, after: effetto successivo (secondi reali)
 // Tassi mostrati: contati in una finestra di 0,5 s reali e divisi per il tempo simulato trascorso (rateSim), quindi
 // per secondo simulato, coerenti con i numeri dei testi (3 Hz, 30/s) a qualunque velocità; impulsi e raffiche con media mobile
 let rateWindow=0,rateSim=0,rateRelCount=0,rateReabCount=0,rateDeadCount=0,rateSpikeCount=0,rateBurstCount=0,rateFireCount=0,rateMissCount=0,rateLostCount=0,displayRelRate=0,displayReabRate=0,displayDeadRate=0,displaySpikeRate=0,displayBurstRate=0,displayFireRate=0,displayLostRate=0,relEma=0,reabEma=0,deadEma=0,lostEma=0,spikeEma=0,burstEma=0,fireEma=0,missEma=0;
@@ -240,10 +242,10 @@ function effectiveD2(){return Math.max(2,Math.round(MODES[mode].d2Count*ageFacto
 const sAct=k=>subst[k].t>0,sAft=k=>subst[k].t<=0&&subst[k].after>0;
 function substBoost(){let b=0;for(const k in subst)if(sAct(k))b+=SUBST[k].boost;return b;}
 function releaseMult(){return (caffeineActive?CAFF_RELEASE:1)*(sAct('nic')?SUBST.nic.release:sAft('nic')?SUBST.nic.afterRelease:1)*(sAct('can')?SUBST.can.release:1)*(sAct('alc')?SUBST.alc.release:1);}
-function datBlock(){return Math.max(mphActive?MPH_BLOCK:0,sAct('coc')?SUBST.coc.datBlock:0);}
-function datSpeedMult(){let m=1;if(mphActive)m*=MPH_SLOW;if(sAct('coc'))m*=SUBST.coc.datSlow;if(mphRebound>0)m*=MPH_REBOUND_SPEED;if(sAft('coc'))m*=SUBST.coc.afterDat;return m;}
-function threshMult(){return (sAft('alc')?SUBST.alc.afterThresh:1)*(sAft('coc')?SUBST.coc.afterThresh:1);}
-function sleepMult(){let m=mphActive?MPH_SLEEP_MULT:1;if(sAct('nic'))m*=SUBST.nic.sleep;if(sAct('alc')||sAft('alc'))m*=SUBST.alc.sleep;if(sAct('coc'))m*=SUBST.coc.sleep;return m;}
+function datBlock(){return Math.max(mphActive?MPH_BLOCK:0,sAct('coc')?SUBST.coc.datBlock:0,sAct('met')?SUBST.met.datBlock:0);}
+function datSpeedMult(){let m=1;if(mphActive)m*=MPH_SLOW;if(sAct('coc'))m*=SUBST.coc.datSlow;if(sAct('met'))m*=SUBST.met.datSlow;if(mphRebound>0)m*=MPH_REBOUND_SPEED;if(sAft('coc'))m*=SUBST.coc.afterDat;return m;}
+function threshMult(){return (sAft('alc')?SUBST.alc.afterThresh:1)*(sAft('coc')?SUBST.coc.afterThresh:1)*(sAft('met')?SUBST.met.afterThresh:1);}
+function sleepMult(){let m=mphActive?MPH_SLEEP_MULT:1;if(sAct('nic'))m*=SUBST.nic.sleep;if(sAct('alc')||sAft('alc'))m*=SUBST.alc.sleep;if(sAct('coc'))m*=SUBST.coc.sleep;if(sAct('met'))m*=SUBST.met.sleep;return m;}
 function synthMult(){return sAft('can')?SUBST.can.afterSynth:1;}
 // Quota di rilascio ancora possibile con la riserva che scende (1 sopra il 20%, poi lineare fino a 0)
 function supply(){return Math.min(1,(vesCount/MAX_VES)/DEPLETE_FROM);}

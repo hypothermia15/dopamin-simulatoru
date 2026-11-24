@@ -30,6 +30,7 @@ I18N.zh={
   'btn.can':'<i>🌿</i><span>大麻</span><small>释放不多，随后合成变慢</small>',
   'btn.alc':'<i>🍷</i><span>酒精</span><small>释放更多，随后宿醉</small>',
   'btn.coc':'<i>❄️</i><span>可卡因</span><small>DAT1 被阻断，随后崩溃</small>',
+  'btn.met':'<i>🧪</i><span>Methamphetamine</span><small>long effect, then withdrawal</small>',
   'leg.dopa':'多巴胺','leg.dead':'已破坏','leg.dat1':'DAT1（再摄取）',
 'leg.dat1@simple':'再摄取','leg.comt':'COMT（酶）','leg.vmat2':'VMAT2（回收）','leg.maob':'MAO（破坏）','leg.d2':'D2 受体','leg.active':'可响应的神经元','leg.fire':'放电的神经元',
   'pause.title':'暂停 / 继续（空格键）',
@@ -153,6 +154,10 @@ I18N.zh={
   't.coc.b':'<p>在 20 秒内阻断 <b>95%</b> 的 <i class="c-dat">DAT1</i>，远远超过药物：多巴胺淹没间隙，所有神经元都被点亮。药效期间 <b>D2 崩塌</b>（一剂就 −50%），睡眠债以 ×2 飞涨。</p>',
   't.coc.after.t':'❄️ 可卡因崩溃',
   't.coc.after.b':'<p>DAT1 以 ×1.5 重启，阈值在 20 秒内升高 30%：多巴胺崩塌，一切都显得灰暗。这就是崩溃；而每一剂都要消耗掉一些 D2，“正常”的水平也就越来越低。</p>',
+  't.met.t':'🧪 Methamphetamine',
+  't.met.b':'<p>Acts on the monoamine transporters: here it blocks the <i class="c-dat">DAT1</i> at <b>60%</b> and adds a release that does not depend on the stimulus, for 40 s. While it lasts the <b>D2 wear down</b> (−50% in a single dose) and sleep debt races at ×2.</p>',
+  't.met.after.t':'🧪 Methamphetamine withdrawal',
+  't.met.after.b':'<p>The threshold rises by 30% for 40 s: low mood, anxiety and poor sleep. In people the acute phase of withdrawal typically lasts 7 to 10 days.</p>',
 
   // 悬停提示
   'tip.dat1.t':'DAT1 · 多巴胺转运体',
@@ -241,6 +246,8 @@ I18N.zh={
   'tip.alc.b':'<p>通过松开腹侧被盖区的刹车<adv>（GABA-A、内源性阿片）</adv>，增加伏隔核里的多巴胺释放：额外释放（+9/秒）持续 <b>30 秒</b>。</p><p>模拟出的代价：<b>宿醉</b>时阈值 +20%，持续 30 秒；期间和之后睡眠债都是 ×1.3（酒精让睡眠变得支离破碎）；药效期间 <b>D2 每秒 −0.8%</b>（每剂 −24%）。未模拟：镇静、协调性、肝脏。</p>',
   'tip.coc.t':'❄️ 可卡因',
   'tip.coc.b':'<p>阻断 DAT（以及去甲肾上腺素和血清素转运体），占据率比哌甲酯高得多也快得多：这里是 <b>95%</b>，持续 <b>20 秒</b>，留在间隙里的多巴胺不断堆积（+14/秒）。</p><p>模拟出的代价：<b>崩溃</b>（DAT1 ×1.5、阈值 +30%，持续 20 秒），睡眠债 ×2，药效期间 <b>D2 每秒 −2.5%</b>（每剂 −50%）：这是本模拟中最快的耐受。未模拟：心脏、血压、急性风险、心理依赖。</p>',
+  'tip.met.t':'🧪 Methamphetamine',
+  'tip.met.b':'<p>Added in the Turkish adaptation, not part of the original simulator. Mean elimination half-life is about <b>10 hours</b>, so the effect in this simulation lasts <b>40 s</b>, twice as long as the simulated cocaine. Higher doses can produce psychosis.</p><p>Simulated costs: <b>withdrawal</b> (threshold +30% for 40 s), sleep debt ×2, <b>−1.25%/s of D2</b> while it lasts (−50% per dose). The size of the extra release and of the block are illustrative. Not simulated: psychosis, heart and blood pressure, neurotoxicity.</p>',
 
   // 信息图（js/figures.js）
   'fig.brain.mid':'中脑','fig.brain.mid2':'少数多巴胺能神经元','fig.brain.str':'纹状体','fig.brain.str2':'运动、奖赏、习惯','fig.brain.pfc':'前额叶皮层','fig.brain.pfc2':'注意力、计划',

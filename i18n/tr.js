@@ -32,6 +32,7 @@ I18N.tr={
   'btn.can':'<i>🌿</i><span>Esrar</span><small>hafif salınım, sonra yavaş sentez</small>',
   'btn.alc':'<i>🍷</i><span>Alkol</span><small>daha çok salınım, sonra akşamdan kalmalık</small>',
   'btn.coc':'<i>❄️</i><span>Kokain</span><small>DAT1 taşıyıcıları bloke, sonra çöküş</small>',
+  'btn.met':'<i>🧪</i><span>Metamfetamin</span><small>uzun etki, sonra yoksunluk</small>',
   'leg.dopa':'Dopamin','leg.dead':'Yıkılmış','leg.dat1':'DAT1 (geri alım)',
 'leg.dat1@simple':'Geri alım','leg.comt':'COMT (enzim)','leg.vmat2':'VMAT2 (geri dönüşüm)','leg.maob':'MAO (yıkar)','leg.d2':'D2 reseptörü','leg.active':'Hazır nöron','leg.fire':'Ateşleyen nöron',
   'pause.title':'Duraklat / sürdür (boşluk tuşu)',
@@ -153,6 +154,10 @@ I18N.tr={
   't.coc.b':'<p><i class="c-dat">DAT1</i> taşıyıcılarını 20 sn boyunca <b>%95</b> oranında bloke eder; ilaçtan çok daha fazla: dopamin aralığı doldurur ve her nöron yanar. Etki sürdükçe <b>D2 reseptörleri çöker</b> (tek dozda −%50), uyku borcu ×2 hızla koşar.</p>',
   't.coc.after.t':'❄️ Kokain çöküşü',
   't.coc.after.b':'<p>DAT1 taşıyıcıları ×1,5 hızla yeniden çalışır ve eşik 20 sn boyunca %30 yükselir: dopamin çöker, her şey gri görünür. Çöküş budur. Her dozda D2 reseptörleri tükendiği için “olağan” giderek daha aşağıda kalır.</p>',
+  't.met.t':'🧪 Metamfetamin',
+  't.met.b':'<p>Monoamin taşıyıcıları üzerinden etki eder: burada 40 sn boyunca <i class="c-dat">DAT1</i> taşıyıcılarını <b>%60</b> oranında bloke eder ve uyarandan bağımsız bir salınım ekler. Etki sürdükçe <b>D2 reseptörleri yıpranır</b> (tek dozda −%50), uyku borcu ×2 hızla koşar.</p>',
+  't.met.after.t':'🧪 Metamfetamin yoksunluğu',
+  't.met.after.b':'<p>Eşik 40 sn boyunca %30 yükselir: çökkün duygudurum, kaygı ve kötü uyku. İnsanlarda yoksunluğun akut dönemi tipik olarak 7-10 gün sürer.</p>',
 
   'tip.dat1.t':'DAT1 · dopamin taşıyıcısı',
   'tip.dat1.t@simple':'Geri alım pompası',
@@ -240,6 +245,8 @@ I18N.tr={
   'tip.alc.b':'<p>Ventral tegmental alandaki freni gevşeterek<adv> (GABA-A, endojen opioidler)</adv> nucleus accumbenste dopamin salınımını artırır: <b>30 sn</b> boyunca ek salınım (+9/sn).</p><p>Canlandırılan bedeller: 30 sn boyunca eşik +%20 ile <b>akşamdan kalmalık</b>, etki sırasında ve sonrasında uyku borcu ×1,3 (alkol uykuyu böler), etki sürdükçe <b>saniyede −%0,8 D2 reseptörü</b> (doz başına −%24). Canlandırılmayan: sedasyon, eşgüdüm, karaciğer.</p>',
   'tip.coc.t':'❄️ Kokain',
   'tip.coc.b':'<p>DAT taşıyıcısını (ayrıca noradrenalin ve serotonin taşıyıcılarını) metilfenidattan çok daha yüksek ve hızlı bir işgal oranıyla bloke eder: burada <b>20 sn</b> boyunca <b>%95</b>; aralıkta kalan dopamin birikir (+14/sn).</p><p>Canlandırılan bedeller: <b>çöküş</b> (20 sn boyunca DAT1 ×1,5 ve eşik +%30), uyku borcu ×2, etki sürdükçe <b>saniyede −%2,5 D2 reseptörü</b> (doz başına −%50): simülasyondaki en hızlı tolerans. Canlandırılmayan: kalp, kan basıncı, akut risk, psikolojik bağımlılık.</p>',
+  'tip.met.t':'🧪 Metamfetamin',
+  'tip.met.b':'<p>Türkçe uyarlamada eklenmiştir, özgün simülatörde yoktur. Ortalama eliminasyon yarılanma ömrü yaklaşık <b>10 saattir</b>, bu yüzden simülasyondaki etkisi <b>40 sn</b> sürer: simülasyondaki kokainin iki katı. Yüksek dozlar psikoza yol açabilir.</p><p>Canlandırılan bedeller: <b>yoksunluk</b> (40 sn boyunca eşik +%30), uyku borcu ×2, etki sürdükçe <b>saniyede −%1,25 D2 reseptörü</b> (doz başına −%50). Ek salınımın ve blokajın büyüklüğü temsilidir. Canlandırılmayan: psikoz, kalp ve kan basıncı, nörotoksisite.</p>',
 
   'fig.brain.mid':'Orta beyin','fig.brain.mid2':'az sayıda dopamin nöronu','fig.brain.str':'Striatum','fig.brain.str2':'hareket, ödül, alışkanlıklar','fig.brain.pfc':'Prefrontal korteks','fig.brain.pfc2':'dikkat, planlama',
   'fig.pre':'DOPAMİN NÖRONU','fig.post':'ALICI NÖRON',

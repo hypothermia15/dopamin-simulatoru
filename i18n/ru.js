@@ -30,6 +30,7 @@ I18N.ru={
   'btn.can':'<i>🌿</i><span>Каннабис</span><small>слабый выброс, медленный синтез</small>',
   'btn.alc':'<i>🍷</i><span>Алкоголь</span><small>больше выброса, затем похмелье</small>',
   'btn.coc':'<i>❄️</i><span>Кокаин</span><small>DAT1 заблокированы, затем крах</small>',
+  'btn.met':'<i>🧪</i><span>Methamphetamine</span><small>long effect, then withdrawal</small>',
   'leg.dopa':'Дофамин','leg.dead':'Разрушен','leg.dat1':'DAT1 (обратный захват)',
 'leg.dat1@simple':'Обратный захват','leg.comt':'COMT (фермент)','leg.vmat2':'VMAT2 (переработка)','leg.maob':'MAO (разрушает)','leg.d2':'Рецептор D2','leg.active':'Восприимчивый нейрон','leg.fire':'Разряжающийся нейрон',
   'pause.title':'Пауза / продолжить (пробел)',
@@ -151,6 +152,10 @@ I18N.ru={
   't.coc.b':'<p>Блокирует <i class="c-dat">DAT1</i> на <b>95%</b> в течение 20 с, намного сильнее препарата: дофамин затапливает щель, и все нейроны загораются. Пока это длится, <b>D2 обваливаются</b> (−50% за одну дозу), а долг сна растёт ×2.</p>',
   't.coc.after.t':'❄️ Кокаиновый крах',
   't.coc.after.b':'<p>DAT1 запускаются с ×1,5, а порог на 20 с растёт на 30%: дофамин обрушивается, и всё кажется серым. Это крах; с расходом D2 при каждой дозе «норма» опускается всё ниже.</p>',
+  't.met.t':'🧪 Methamphetamine',
+  't.met.b':'<p>Acts on the monoamine transporters: here it blocks the <i class="c-dat">DAT1</i> at <b>60%</b> and adds a release that does not depend on the stimulus, for 40 s. While it lasts the <b>D2 wear down</b> (−50% in a single dose) and sleep debt races at ×2.</p>',
+  't.met.after.t':'🧪 Methamphetamine withdrawal',
+  't.met.after.b':'<p>The threshold rises by 30% for 40 s: low mood, anxiety and poor sleep. In people the acute phase of withdrawal typically lasts 7 to 10 days.</p>',
 
   'tip.dat1.t':'DAT1 · транспортёр дофамина',
   'tip.dat1.t@simple':'Насос обратного захвата',
@@ -238,6 +243,8 @@ I18N.ru={
   'tip.alc.b':'<p>Повышает выброс дофамина в прилежащем ядре, снимая тормоз с вентральной области покрышки<adv> (ГАМК-A, эндогенные опиоиды)</adv>: дополнительный выброс (+9/с) в течение <b>30 с</b>.</p><p>Смоделированная цена: <b>похмелье</b> с порогом +20% на 30 с, долг сна ×1,3 во время и после (алкоголь дробит сон), <b>−0,8%/с D2</b> пока действие длится (−24% за дозу). Не моделируются: седация, координация, печень.</p>',
   'tip.coc.t':'❄️ Кокаин',
   'tip.coc.b':'<p>Блокирует DAT (а также транспортёры норадреналина и серотонина) с гораздо более высокой и быстрой занятостью, чем метилфенидат: здесь <b>95%</b> в течение <b>20 с</b>, и оставшийся в щели дофамин накапливается (+14/с).</p><p>Смоделированная цена: <b>крах</b> (DAT1 ×1,5 и порог +30% на 20 с), долг сна ×2, <b>−2,5%/с D2</b> пока действие длится (−50% за дозу) — самое быстрое привыкание в симуляции. Не моделируются: сердце, давление, острый риск, психологическая зависимость.</p>',
+  'tip.met.t':'🧪 Methamphetamine',
+  'tip.met.b':'<p>Added in the Turkish adaptation, not part of the original simulator. Mean elimination half-life is about <b>10 hours</b>, so the effect in this simulation lasts <b>40 s</b>, twice as long as the simulated cocaine. Higher doses can produce psychosis.</p><p>Simulated costs: <b>withdrawal</b> (threshold +30% for 40 s), sleep debt ×2, <b>−1.25%/s of D2</b> while it lasts (−50% per dose). The size of the extra release and of the block are illustrative. Not simulated: psychosis, heart and blood pressure, neurotoxicity.</p>',
 
   'fig.brain.mid':'Средний мозг','fig.brain.mid2':'немного дофаминовых нейронов','fig.brain.str':'Стриатум','fig.brain.str2':'движение, награда, привычки','fig.brain.pfc':'Префронтальная кора','fig.brain.pfc2':'внимание, планирование',
   'fig.pre':'ДОФАМИНОВЫЙ НЕЙРОН','fig.post':'ПРИНИМАЮЩИЙ НЕЙРОН',

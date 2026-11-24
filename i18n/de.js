@@ -30,6 +30,7 @@ I18N.de={
   'btn.can':'<i>🌿</i><span>Cannabis</span><small>wenig Freisetzung, langsame Synthese</small>',
   'btn.alc':'<i>🍷</i><span>Alkohol</span><small>mehr Freisetzung, dann Kater</small>',
   'btn.coc':'<i>❄️</i><span>Kokain</span><small>DAT1 blockiert, dann Crash</small>',
+  'btn.met':'<i>🧪</i><span>Methamphetamine</span><small>long effect, then withdrawal</small>',
   'leg.dopa':'Dopamin','leg.dead':'Abgebaut','leg.dat1':'DAT1 (Wiederaufnahme)',
 'leg.dat1@simple':'Wiederaufnahme','leg.comt':'COMT (Enzym)','leg.vmat2':'VMAT2 (Recycling)','leg.maob':'MAO (baut ab)','leg.d2':'D2-Rezeptor','leg.active':'Empfängliches Neuron','leg.fire':'Feuerndes Neuron',
   'pause.title':'Pause / weiter (Leertaste)',
@@ -151,6 +152,10 @@ I18N.de={
   't.coc.b':'<p>Blockiert die <i class="c-dat">DAT1</i> zu <b>95 %</b> für 20 s, viel stärker als das Medikament: Das Dopamin überflutet den Spalt und alle Neuronen leuchten auf. Solange sie anhält, <b>brechen die D2 ein</b> (−50 % in einer einzigen Dosis) und die Schlafschuld rast mit ×2.</p>',
   't.coc.after.t':'❄️ Kokain-Crash',
   't.coc.after.b':'<p>Die DAT1 starten mit ×1,5 und die Schwelle steigt 20 s lang um 30 %: Das Dopamin bricht ein und alles wirkt grau. Das ist der Crash; mit den bei jeder Dosis verbrauchten D2 liegt das „Normale“ immer tiefer.</p>',
+  't.met.t':'🧪 Methamphetamine',
+  't.met.b':'<p>Acts on the monoamine transporters: here it blocks the <i class="c-dat">DAT1</i> at <b>60%</b> and adds a release that does not depend on the stimulus, for 40 s. While it lasts the <b>D2 wear down</b> (−50% in a single dose) and sleep debt races at ×2.</p>',
+  't.met.after.t':'🧪 Methamphetamine withdrawal',
+  't.met.after.b':'<p>The threshold rises by 30% for 40 s: low mood, anxiety and poor sleep. In people the acute phase of withdrawal typically lasts 7 to 10 days.</p>',
 
   'tip.dat1.t':'DAT1 · Dopamintransporter',
   'tip.dat1.t@simple':'Wiederaufnahme-Pumpe',
@@ -238,6 +243,8 @@ I18N.de={
   'tip.alc.b':'<p>Erhöht die Dopaminfreisetzung im Nucleus accumbens, indem er die Bremse des ventralen Tegmentums löst<adv> (GABA-A, körpereigene Opioide)</adv>: zusätzliche Freisetzung (+9/s) <b>30 s</b> lang.</p><p>Simulierte Kosten: <b>Kater</b> mit Schwelle +20 % für 30 s, Schlafschuld ×1,3 während und danach (Alkohol zerstückelt den Schlaf), <b>−0,8 %/s D2</b> während der Wirkung (−24 % pro Dosis). Nicht simuliert: Sedierung, Koordination, Leber.</p>',
   'tip.coc.t':'❄️ Kokain',
   'tip.coc.b':'<p>Blockiert den DAT (und die Noradrenalin- und Serotonintransporter) mit viel höherer und schnellerer Besetzung als Methylphenidat: hier <b>95 %</b> für <b>20 s</b>, und das im Spalt verbleibende Dopamin sammelt sich an (+14/s).</p><p>Simulierte Kosten: <b>Crash</b> (DAT1 ×1,5 und Schwelle +30 % für 20 s), Schlafschuld ×2, <b>−2,5 %/s D2</b> während der Wirkung (−50 % pro Dosis): die schnellste Gewöhnung der Simulation. Nicht simuliert: Herz, Blutdruck, akutes Risiko, psychische Abhängigkeit.</p>',
+  'tip.met.t':'🧪 Methamphetamine',
+  'tip.met.b':'<p>Added in the Turkish adaptation, not part of the original simulator. Mean elimination half-life is about <b>10 hours</b>, so the effect in this simulation lasts <b>40 s</b>, twice as long as the simulated cocaine. Higher doses can produce psychosis.</p><p>Simulated costs: <b>withdrawal</b> (threshold +30% for 40 s), sleep debt ×2, <b>−1.25%/s of D2</b> while it lasts (−50% per dose). The size of the extra release and of the block are illustrative. Not simulated: psychosis, heart and blood pressure, neurotoxicity.</p>',
 
   'fig.brain.mid':'Mittelhirn','fig.brain.mid2':'wenige Dopamin-Neuronen','fig.brain.str':'Striatum','fig.brain.str2':'Bewegung, Belohnung, Gewohnheiten','fig.brain.pfc':'Präfrontaler Cortex','fig.brain.pfc2':'Aufmerksamkeit, Planung',
   'fig.pre':'DOPAMIN-NEURON','fig.post':'EMPFANGENDES NEURON',

@@ -45,7 +45,7 @@ function buildToasts(){
   if(mphActive)list.push({key:'mph',c:C.mph,t:T('t.mph.t'),s:T('u.sec',{n:Math.ceil(mphTimer)}),b:depleted?T('t.mph.depleted'):T('t.mph.b',{trend:trendText()})});
   else if(mphRebound>0)list.push({key:'mphre',c:C.tol,t:T('t.mphre.t'),s:T('u.sec',{n:Math.ceil(mphRebound)}),b:T('t.mphre.b')});
   // Sostanze: mentre l'effetto dura, accanto al tempo si vedono i D2 che scendono
-  for(const k of ['nic','can','alc','coc']){const s=subst[k];
+  for(const k of ['nic','can','alc','coc','met']){const s=subst[k];
     if(s.t>0)list.push({key:k,c:C[k],t:T('t.'+k+'.t'),s:T('u.sec',{n:Math.ceil(s.t)})+' · '+T('u.d2',{rec:effectiveD2(),full:baseD2()}),b:T('t.'+k+'.b')});
     else if(s.after>0)list.push({key:k+'-after',c:C.tol,t:T('t.'+k+'.after.t'),s:T('u.sec',{n:Math.ceil(s.after)}),b:T('t.'+k+'.after.b')});}
   if(exerciseActive)list.push({key:'exer',c:C.exer,t:T('t.exer.t'),s:T('u.sec',{n:Math.ceil(exerciseTimer)}),
@@ -99,6 +99,7 @@ const TIPS={
   can:()=>({t:T('tip.can.t'),c:C.can,b:T('tip.can.b')}),
   alc:()=>({t:T('tip.alc.t'),c:C.alc,b:T('tip.alc.b')}),
   coc:()=>({t:T('tip.coc.t'),c:C.coc,b:T('tip.coc.b')}),
+  met:()=>({t:T('tip.met.t'),c:C.met,b:T('tip.met.b')}),
   vmat2:()=>({t:T('tip.vmat2.t'),c:C.vmat,b:T('tip.vmat2.b',{ratio:Math.round(MODES[mode].vmat2Ratio*100),rec:stats.recycled})}),
   maob:()=>({t:T('tip.maob.t'),c:C.dead,b:T('tip.maob.b',{maob:stats.maob,comt:stats.comt})}),
   snap:()=>({t:T('tip.snap.t'),c:C.snap,b:T('tip.snap.b',{rel:displayRelRate})}),
@@ -199,7 +200,7 @@ function updateHUD(){
   if(hudCache.mw!==mw){hudCache.mw=mw;mk.style.width=mw;}
   setWidth('scroll-fill',scrollActive?'100%':'0%');
   if(hudCache.scrollOn!==scrollActive){hudCache.scrollOn=scrollActive;const b=$('btn-scroll');b.classList.toggle('on',scrollActive);b.setAttribute('aria-pressed',String(scrollActive));}
-  for(const k of ['nic','can','alc','coc'])setWidth(k+'-fill',(subst[k].t>0?(subst[k].t/SUBST[k].dur*100).toFixed(1):0)+'%');
+  for(const k of ['nic','can','alc','coc','met'])setWidth(k+'-fill',(subst[k].t>0?(subst[k].t/SUBST[k].dur*100).toFixed(1):0)+'%');
   // Barra dei recettori D2: fondo scala = D2_MAX (neurotipico a 5 anni), tacca = base per cervello ed età, testo = recettori per neurone
   const eff=effectiveD2(),base=baseD2();
   setWidth('d2-fill',Math.min(100,eff/D2_MAX*100).toFixed(1)+'%');
@@ -308,7 +309,7 @@ function initUI(){
   $('btn-caffeine').addEventListener('click',startCaffeine);
   $('btn-mph').addEventListener('click',startMph);
   $('btn-scroll').addEventListener('click',toggleScroll);
-  for(const k of ['nic','can','alc','coc'])$('btn-'+k).addEventListener('click',()=>startSubst(k));
+  for(const k of ['nic','can','alc','coc','met'])$('btn-'+k).addEventListener('click',()=>startSubst(k));
   const ageEl=$('age');
   ageEl.value=age;$('age-val').textContent=age;syncRange(ageEl,age,5,100);
   ageEl.addEventListener('input',e=>{setAge(+e.target.value);$('age-val').textContent=e.target.value;syncRange(ageEl,+e.target.value,5,100);saveSettings();});

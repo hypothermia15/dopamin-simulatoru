@@ -30,6 +30,7 @@ I18N.ar={
   'btn.can':'<i>🌿</i><span>الحشيش</span><small>إفراز خفيف، ثم تصنيع بطيء</small>',
   'btn.alc':'<i>🍷</i><span>الكحول</span><small>إفراز أكثر، ثم أعراض ما بعده</small>',
   'btn.coc':'<i>❄️</i><span>الكوكايين</span><small>DAT1 محجوبة، ثم انهيار</small>',
+  'btn.met':'<i>🧪</i><span>Methamphetamine</span><small>long effect, then withdrawal</small>',
   'leg.dopa':'دوبامين','leg.dead':'مُدمَّر','leg.dat1':'DAT1 (إعادة الالتقاط)',
 'leg.dat1@simple':'إعادة الالتقاط','leg.comt':'COMT (إنزيم)','leg.vmat2':'VMAT2 (إعادة التدوير)','leg.maob':'MAO (يدمّر)','leg.d2':'مستقبل D2','leg.active':'عصبون مستجيب','leg.fire':'عصبون يُطلق',
   'pause.title':'إيقاف مؤقت / متابعة (مفتاح المسافة)',
@@ -153,6 +154,10 @@ I18N.ar={
   't.coc.b':'<p>يحجب <i class="c-dat">DAT1</i> بنسبة <b>95%</b> لمدة 20 ث، أكثر بكثير من الدواء: يغمر الدوبامين الشق وتضيء العصبونات كلها. وما دام الأثر مستمرًا <b>تنهار D2</b> (−50% في جرعة واحدة) ويجري دَين النوم ×2.</p>',
   't.coc.after.t':'❄️ انهيار بعد الكوكايين',
   't.coc.after.b':'<p>تعود DAT1 للعمل عند ×1.5 وترتفع العتبة بنسبة 30% لمدة 20 ث: ينهار الدوبامين ويبدو كل شيء رماديًا. هذا هو الانهيار؛ ومع استهلاك D2 في كل جرعة يهبط "الوضع الطبيعي" أكثر فأكثر.</p>',
+  't.met.t':'🧪 Methamphetamine',
+  't.met.b':'<p>Acts on the monoamine transporters: here it blocks the <i class="c-dat">DAT1</i> at <b>60%</b> and adds a release that does not depend on the stimulus, for 40 s. While it lasts the <b>D2 wear down</b> (−50% in a single dose) and sleep debt races at ×2.</p>',
+  't.met.after.t':'🧪 Methamphetamine withdrawal',
+  't.met.after.b':'<p>The threshold rises by 30% for 40 s: low mood, anxiety and poor sleep. In people the acute phase of withdrawal typically lasts 7 to 10 days.</p>',
 
   // تلميحات
   'tip.dat1.t':'DAT1 · ناقل الدوبامين',
@@ -241,6 +246,8 @@ I18N.ar={
   'tip.alc.b':'<p>يزيد إفراز الدوبامين في النواة المتّكئة برفع الكابح عن المنطقة السقيفية البطنية<adv> (GABA-A، والأفيونيات الداخلية)</adv>: إفراز إضافي (+9/ث) لمدة <b>30 ث</b>.</p><p>الكلفة المُحاكاة: <b>أعراض ما بعده</b> مع عتبة +20% لمدة 30 ث، دَين نوم ×1.3 أثناء الأثر وبعده (الكحول يفتّت النوم)، <b>−0.8%/ث من D2</b> ما دام مستمرًا (−24% لكل جرعة). غير مُحاكى: التخدير، التناسق الحركي، الكبد.</p>',
   'tip.coc.t':'❄️ الكوكايين',
   'tip.coc.b':'<p>يحجب DAT (وناقلات النورأدرينالين والسيروتونين) بإشغال أعلى وأسرع بكثير من الميثيلفينيدات: هنا <b>95%</b> لمدة <b>20 ث</b>، فيتراكم الدوبامين الباقي في الشق (+14/ث).</p><p>الكلفة المُحاكاة: <b>انهيار</b> (DAT1 ×1.5 والعتبة +30% لمدة 20 ث)، دَين نوم ×2، <b>−2.5%/ث من D2</b> ما دام مستمرًا (−50% لكل جرعة): أسرع تحمّل في المحاكاة. غير مُحاكى: القلب، ضغط الدم، الخطر الحادّ، الاعتماد النفسي.</p>',
+  'tip.met.t':'🧪 Methamphetamine',
+  'tip.met.b':'<p>Added in the Turkish adaptation, not part of the original simulator. Mean elimination half-life is about <b>10 hours</b>, so the effect in this simulation lasts <b>40 s</b>, twice as long as the simulated cocaine. Higher doses can produce psychosis.</p><p>Simulated costs: <b>withdrawal</b> (threshold +30% for 40 s), sleep debt ×2, <b>−1.25%/s of D2</b> while it lasts (−50% per dose). The size of the extra release and of the block are illustrative. Not simulated: psychosis, heart and blood pressure, neurotoxicity.</p>',
 
   // الرسوم التوضيحية (js/figures.js)
   'fig.brain.mid':'الدماغ المتوسط','fig.brain.mid2':'عصبونات دوبامينية قليلة','fig.brain.str':'الجسم المخطط','fig.brain.str2':'الحركة، المكافأة، العادات','fig.brain.pfc':'القشرة الجبهية الأمامية','fig.brain.pfc2':'الانتباه، التخطيط',

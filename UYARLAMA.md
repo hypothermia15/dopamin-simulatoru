@@ -88,6 +88,22 @@ Buitelaar JK, Newcorn JH. Adult Attention Deficit-Hyperactivity Disorder. N Engl
 
 Doğrulanmayan: iki ifade de makaledeki şekilden alındı. Şekil, uyarlayanın paylaştığı ekran görüntüsünden okundu; tam metin okunmadı. Şekil kopyalanmadı.
 
+## 24 Kasım 2026: üç isteğe bağlı mekanizma ve yan yana karşılaştırma
+
+Kullanıcı isteğiyle. Üç mekanizma "Mekanizmalar" kartındadır, başlangıçta kapalıdır ve Çocuk modunda gizlidir. Kapalıyken model özgün hâliyle çalışır (özgün 117 test değişmeden geçer).
+
+| Mekanizma | Modeldeki karşılığı (`MECH`, `mech`) | Kaynakta olan (PubMed özeti) | Uyarlayanın seçtiği (temsili) |
+|---|---|---|---|
+| Otoreseptör freni (`auto`) | Aralıktaki serbest dopamin arttıkça salınım çarpanı düşer (`autoMult()`, en çok −%50; 30 serbest molekülde tam fren). Antipsikotik freni işgal oranı kadar kaldırır; aripiprazol işgal ettiği oranın %30'u kadar fren yapar. | D2 otoreseptörleri Gi/o bağlı baskılayıcı reseptörlerdir; dopaminin sentezini, salınımını ve geri alımını denetler (Ford 2014, doi:10.1016/j.neuroscience.2014.01.025). | Bütün sayılar. Antipsikotik ve aripiprazolün frene etkisi özetten değil modelin kuralından çıkar. Sentez ve geri alım üzerindeki otoreseptör etkisi modellenmedi. Geri besleme nedeniyle yüksek uyaranda fren %25-35 dolayında dengelenir. |
+| Uzun süreli antipsikotik (`up`) | Antipsikotik etkinken `d2Up` 40 sn'de +%34'e çıkar, ilaç bitince 40 sn'de iner; `effectiveD2()` bu oranla çarpılır. | 9 hasta, tedavi kesildikten 14 gün sonra D2 bağlanma potansiyeli +%34 (klasik +%37, yeni kuşak +%31); en yüksek artışta (%98) tardif diskinezi (Silvestri 2000, doi:10.1007/s002130000532). | Süreler. Çalışma kesilme sonrasını ölçer; artışın ilaç sürerken nasıl geliştiği özetten bilinmez. Aripiprazol için artış modellenmedi. |
+| Demir eksikliği (`iron`) | `synthMult()` ×0,7 | DEHB'li çocuklarda serum ferritini daha düşük (SMD −0,40; 10 çalışma), serum demirinde fark yok (Wang 2017, doi:10.1371/journal.pone.0169145). Kanıt tutarsız, rutin ferritin ölçümü önermek için yetersiz (Araújo 2026, doi:10.7759/cureus.103196). | %30 yavaşlama. Ferritin düşüklüğü ile beyindeki dopamin sentezi arasındaki bağ bu kaynaklarda ölçülmez. |
+
+**Yan yana karşılaştırma** (`karsilastir.html`, `js/karsilastir.js`, `css/karsilastir.css`): aynı sayfayı `?gomulu=1&kid=0&lang=tr` ile iki çerçevede açar. Gömülü çalışmada (`GOMULU`, `body.gomulu`) üst bölüm, sekmeler ve yan panel gizlenir ve ayarlar kaydedilmez. Dokuz hazır karşılaştırma, ortak uyaran ve zaman ayarı, her taraf için işlem menüsü ve dört sayısal gösterge vardır. İki taraf ayrı rastgele akışlarla çalışır.
+
+Yeni model işlevleri: `setMech`, `autoMult`, `autoDrive`, `tamSifirla`, `durumOzeti`. Sözlüğe 20 anahtar eklendi (Türkçe ve İngilizce yazıldı, öteki on dilde İngilizce). Testler: 14 yeni denetim, toplam 162.
+
+Yapılmayan: "ilaç tatili". Dayanak olacak bir kaynak taranmadı.
+
 ## Kaynaklar
 
 "Model ve gerçeklik" sayfasındaki on kaynak özgün yazarın seçimidir. Künyeleri (dergi, yıl, cilt, ilk sayfa, ilk yazar) Kasım 2026'da PubMed kayıtlarıyla eşleştirildi; metinlerdeki sayısal aktarımlar tek tek kaynak makalelerle karşılaştırılmadı.

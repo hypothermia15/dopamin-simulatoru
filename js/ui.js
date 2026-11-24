@@ -44,6 +44,10 @@ function buildToasts(){
   else if(caffEndTimer>0)list.push({key:'caffend',c:C.caff,t:T('t.caffend.t'),b:T('t.caffend.b',{real,perc:Math.round(sleepDebt*CAFF_DEBT_MASK*100)})});
   if(mphActive)list.push({key:'mph',c:C.mph,t:T('t.mph.t'),s:T('u.sec',{n:Math.ceil(mphTimer)})+(mphDose!==1?' · '+T('mphdose.'+mphDose):''),b:depleted?T('t.mph.depleted'):T('t.mph.b',{trend:trendText()})});
   else if(mphRebound>0)list.push({key:'mphre',c:C.tol,t:T('t.mphre.t'),s:T('u.sec',{n:Math.ceil(mphRebound)}),b:T('t.mphre.b')});
+  // Meccanismi dell'adattamento turco
+  if(mech.auto)list.push({key:'auto',c:C.auto,t:T('t.auto.t'),s:T('u.brake',{n:Math.round((1-autoMult())*100)}),b:T('t.auto.b')});
+  if(mech.up)list.push({key:'up',c:C.up,t:T(d2Up>0&&meds.aps.t<=0?'t.upre.t':'t.up.t'),s:T('u.up',{n:Math.round(d2Up*100)}),b:T(d2Up>0&&meds.aps.t<=0?'t.upre.b':'t.up.b')});
+  if(mech.iron)list.push({key:'iron',c:C.iron,t:T('t.iron.t'),b:T('t.iron.b')});
   // Farmaci dell'adattamento turco
   for(const k of ['mphx','atx','gua','aps','ari']){const m=meds[k];
     if(m.t>0)list.push({key:k,c:C[k],t:T('t.'+k+'.t'),s:T('u.sec',{n:Math.ceil(m.t)})+(k==='aps'||k==='ari'?' · '+T('u.d2free',{rec:freeD2(),full:effectiveD2()}):''),b:T('t.'+k+'.b')});}
@@ -132,6 +136,9 @@ const TIPS={
   gua:()=>({t:T('tip.gua.t'),c:C.gua,b:T('tip.gua.b')}),
   aps:()=>({t:T('tip.aps.t'),c:C.aps,b:T('tip.aps.b')}),
   ari:()=>({t:T('tip.ari.t'),c:C.ari,b:T('tip.ari.b')}),
+  auto:()=>({t:T('tip.auto.t'),c:C.auto,b:T('tip.auto.b')}),
+  up:()=>({t:T('tip.up.t'),c:C.up,b:T('tip.up.b')}),
+  iron:()=>({t:T('tip.iron.t'),c:C.iron,b:T('tip.iron.b')}),
   mphdose:()=>({t:T('tip.mphdose.t'),c:C.mph,b:T('tip.mphdose.b')}),
   scroll:()=>({t:T('tip.scroll.t'),c:C.scroll,b:T('tip.scroll.b',{sens:Math.round(d2Sens*100)})}),
   exercise:()=>({t:T('tip.exercise.t'),c:C.exer,b:T('tip.exercise.b')}),
@@ -211,6 +218,7 @@ function updateHUD(){
   if(hudCache.ml!==ml){hudCache.ml=ml;mk.style.insetInlineStart=ml;}
   if(hudCache.mw!==mw){hudCache.mw=mw;mk.style.width=mw;}
   setWidth('scroll-fill',scrollActive?'100%':'0%');
+  for(const k of ['auto','up','iron']){const b=$('btn-'+k);if(b&&b.classList.contains('on')!==mech[k]){b.classList.toggle('on',mech[k]);b.setAttribute('aria-pressed',String(mech[k]));}setWidth(k+'-fill',mech[k]?'100%':'0%');}
   if(hudCache.scrollOn!==scrollActive){hudCache.scrollOn=scrollActive;const b=$('btn-scroll');b.classList.toggle('on',scrollActive);b.setAttribute('aria-pressed',String(scrollActive));}
   for(const k of ['nic','can','alc','coc','met'])setWidth(k+'-fill',(subst[k].t>0?(subst[k].t/SUBST[k].dur*100).toFixed(1):0)+'%');
   // Barra dei recettori D2: fondo scala = D2_MAX (neurotipico a 5 anni), tacca = base per cervello ed età, testo = recettori per neurone
@@ -238,6 +246,7 @@ function loadSettings(){
   if(typeof o.speed==='number')setSpeed(o.speed);
 }
 function saveSettings(){
+  if(GOMULU)return;   // gömülü kopya ana sayfanın ayarlarını değiştirmez
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{try{localStorage.setItem(SETTINGS_KEY,JSON.stringify({mode,age,stim:stimulus,speed:speedMul}));}catch(e){}},150);
 }
@@ -261,6 +270,7 @@ function setKidMode(on){
   try{const u=new URL(location.href);if(kidMode)u.searchParams.set('kid','1');else u.searchParams.delete('kid');history.replaceState(null,'',u.pathname+u.search+u.hash);}catch(e){}
   setAge(kidMode?KID_AGE:AGE_REF);
   const ageEl=$('age');ageEl.value=age;$('age-val').textContent=age;syncRange(ageEl,age,5,100);
+  if(kidMode)for(const k in mech)setMech(k,false);
   if(kidMode){for(const k in meds)meds[k].t=0;mphxRebound=0;setMphDose(1);const de=$('mphdose');if(de){de.value=1;syncRange(de,1,0,2);}}
   if(kidMode)for(const k in subst){subst[k].t=0;subst[k].after=0;}   // niente sostanze attive quando si passa ai ragazzi
   saveSettings();applyI18n();updateHUD();
@@ -324,6 +334,7 @@ function initUI(){
   for(const k of ['mphx','atx','gua','aps','ari'])$('btn-'+k).addEventListener('click',()=>startMed(k));
   {const de=$('mphdose');syncRange(de,mphDose,0,2);de.addEventListener('input',e=>{setMphDose(+e.target.value);syncRange(de,mphDose,0,2);});}
   $('btn-scroll').addEventListener('click',toggleScroll);
+  for(const k of ['auto','up','iron'])$('btn-'+k).addEventListener('click',()=>setMech(k,!mech[k]));
   for(const k of ['nic','can','alc','coc','met'])$('btn-'+k).addEventListener('click',()=>startSubst(k));
   const ageEl=$('age');
   ageEl.value=age;$('age-val').textContent=age;syncRange(ageEl,age,5,100);

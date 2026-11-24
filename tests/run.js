@@ -16,7 +16,7 @@ const sandbox={console,performance,Math:Object.assign(Object.create(Math),{rando
 vm.createContext(sandbox);
 for(const f of ['js/util.js','js/model.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),sandbox,{filename:f});
 const G=expr=>vm.runInContext(expr,sandbox);   // evaluate inside the model's scope
-const M=G('({setGeometry,resetSim,setMode,setAge,setStimulus,setSpeed,update,startCaffeine,startMph,startExercise,toggleScroll,startSubst,startMed,setMphDose,thresholdNow,releaseMult,datBlock,datSpeedMult,threshMult,sleepMult,synthMult,supply,ageFactor,effectiveD2,baseD2,baseD2Of,passPct})');
+const M=G('({setGeometry,resetSim,setMode,setAge,setStimulus,setSpeed,update,startCaffeine,startMph,startExercise,toggleScroll,startSubst,startMed,setMphDose,setMech,autoMult,thresholdNow,releaseMult,datBlock,datSpeedMult,threshMult,sleepMult,synthMult,supply,ageFactor,effectiveD2,baseD2,baseD2Of,passPct})');
 M.setGeometry(1000,520);
 
 // ── helpers ──
@@ -243,5 +243,14 @@ M.setMphDose(0);M.startMph();run(1);within('methylphenidate low dose: DAT1 block
 M.setMphDose(1);within('methylphenidate medium dose: the original 85%',S().block,0.84,0.86);within('methylphenidate medium dose: threshold untouched',G('threshMult()')/thrD,0.999,1.001);
 M.setMphDose(2);within('methylphenidate high dose: DAT1 block 90%',S().block,0.89,0.91);within('methylphenidate high dose: threshold x1.2',G('threshMult()')/thrD,1.19,1.21);within('methylphenidate high dose: sleep debt x2',G('sleepMult()'),1.99,2.01);
 M.setMphDose(7);ok('dose is clamped to 0..2',G('mphDose')===2,String(G('mphDose')));M.setMphDose(1);
+// mechanisms added in the Turkish adaptation: off by default, the original model is untouched
+ok('mechanisms are off by default',G('!mech.auto&&!mech.up&&!mech.iron&&d2Up===0'),'');
+reset({stim:0.9});run(15);const relOff=S().relm;M.setMech('auto',true);run(10);const brk=1-G('autoMult()');ok('autoreceptor: at a high stimulus the brake settles between 20% and 50% (negative feedback)',brk>0.2&&brk<=0.5,fmt(brk));within('autoreceptor: release multiplier equals 1 minus the brake',S().relm/relOff,1-brk-0.005,1-brk+0.005);
+M.startMed('aps');run(10);const brk2=1-G('autoMult()');ok('autoreceptor: the antipsychotic loosens the brake',brk2<brk*0.5,`${fmt(brk2)} against ${fmt(brk)}`);
+reset({stim:0});M.setMech('auto',true);run(3);M.startMed('ari');run(15);G('cleftFree=0;');within('autoreceptor: aripiprazole alone brakes by 12.75% (0.5 x 0.3 x 0.85) with an empty cleft',1-G('autoMult()'),0.127,0.128);G('cleftFree=30;');within('autoreceptor: with a full cleft aripiprazole leaves a 20% brake instead of 50%',1-G('autoMult()'),0.2,0.205);M.setMech('auto',false);within('autoreceptor off: multiplier back to 1',G('autoMult()'),0.999,1.001);
+reset({stim:0.3});const d2n=S().d2;M.setMech('up',true);run(5);ok('up-regulation: nothing happens without the antipsychotic',S().d2===d2n&&G('d2Up')===0,String(S().d2));
+G('MEDS.aps.dur=9999;');M.startMed('aps');run(45);G('MEDS.aps.dur=60;');within('up-regulation: +34% after 40 s of antipsychotic',G('d2Up'),0.339,0.341);ok('up-regulation: 16 receptors instead of 12',S().d2===Math.round(d2n*1.34),`${S().d2} of ${d2n}`);
+G('meds.aps.t=0.05;');run(1);ok('up-regulation: extra receptors outlast the drug (supersensitivity)',S().d2>d2n&&G('freeD2()')>d2n,`${G('freeD2()')} free`);run(45);ok('up-regulation: back to baseline after 40 s',S().d2===d2n&&G('d2Up')===0,String(S().d2));M.setMech('up',false);
+reset({stim:0.3});const sy=S().synth;M.setMech('iron',true);within('iron deficiency: synthesis x0.7',S().synth/sy,0.699,0.701);M.setMech('iron',false);within('iron deficiency off: synthesis back',S().synth/sy,0.999,1.001);
 console.log(`\n${checks-fails}/${checks} checks passed (seed ${seed}${verbose?'':', --verbose for every measurement'})`);
 process.exit(fails?1:0);

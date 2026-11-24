@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yan Yana Karşılaştırma · Dopamin Simülatörü</title>
+<meta name="description" content="Aynı dopamin sinapsını iki ayrı koşulda aynı anda izleyin: ilaçlı ve ilaçsız, kısa ve uzun etkili, antipsikotik ve aripiprazol.">
+<link rel="stylesheet" href="css/karsilastir.css?v=1">
+</head>
+<body>
+<header class="k-ust">
+  <a class="geri" href="index.html">← Simülatöre dön</a>
+  <h1>Yan Yana Karşılaştırma</h1>
+  <p>Aynı sinaps, iki ayrı koşul, aynı anda. Bir hazır karşılaştırma seçin ya da iki tarafı kendiniz kurun.</p>
+  <p class="k-uyari"><strong>Uyarlayanın notu.</strong> Bu sayfa Türkçe uyarlamada eklenmiştir. İki taraf ayrı rastgele akışlarla çalışır: küçük farklar rastlantıdan gelebilir, eğilime bakın. Sayılar yaklaşık göstergelerdir, tanı koymaz ve tedavi önermez.</p>
+</header>
+<main class="k-govde">
+  <section class="k-hazir" aria-label="Hazır karşılaştırmalar"><h2>Hazır karşılaştırmalar</h2><div id="k-hazir"></div></section>
+  <section class="k-ortak" aria-label="Ortak ayarlar">
+    <label>Uyaran <output id="k-uyaran-deger">50%</output><input type="range" id="k-uyaran" min="0" max="100" value="50"></label>
+    <label>Zaman <output id="k-hiz-deger">2×</output><input type="range" id="k-hiz" min="1" max="8" step="0.5" value="2"></label>
+    <button type="button" id="k-sifirla">İkisini sıfırla</button>
+  </section>
+  <section class="k-iki">
+    <article class="k-yan" data-yan="0">
+      <h2 class="k-ad" id="k-ad-0">Sol</h2>
+      <iframe id="k-cerceve-0" title="Sol simülasyon" src="index.html?gomulu=1&amp;kid=0&amp;lang=tr" loading="eager"></iframe>
+      <dl class="k-oku" id="k-oku-0"></dl>
+      <div class="k-ekle"><select id="k-sec-0" aria-label="Sol tarafa uygulanacak"></select><button type="button" data-uygula="0">Uygula</button></div>
+    </article>
+    <article class="k-yan" data-yan="1">
+      <h2 class="k-ad" id="k-ad-1">Sağ</h2>
+      <iframe id="k-cerceve-1" title="Sağ simülasyon" src="index.html?gomulu=1&amp;kid=0&amp;lang=tr" loading="eager"></iframe>
+      <dl class="k-oku" id="k-oku-1"></dl>
+      <div class="k-ekle"><select id="k-sec-1" aria-label="Sağ tarafa uygulanacak"></select><button type="button" data-uygula="1">Uygula</button></div>
+    </article>
+  </section>
+  <p class="k-ipucu" id="k-ipucu"></p>
+</main>
+<script src="js/karsilastir.js?v=1"></script>
+</body>
+</html>

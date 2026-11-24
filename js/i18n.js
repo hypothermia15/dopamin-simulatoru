@@ -22,6 +22,7 @@ const LOCALE=Object.fromEntries(LANG_META.map(l=>[l.code,l.locale]));
 let lang='tr';   // Türkçe uyarlama: varsayılan dil Türkçe
 // Modalità ragazzi: i testi possono avere una variante <chiave>@kid (niente sostanze, esempi adatti); la attiva ui.js
 let kidMode=false;
+let GOMULU=false;try{GOMULU=new URLSearchParams(location.search).has('gomulu');}catch(e){}   // Türkçe uyarlama: karşılaştırma sayfasına gömülü çalışma
 // Vista semplificata: stesso modello, per chi non sa di chimica. Sullo schermo spariscono COMT, VMAT2, MAO e le scie;
 // i pezzi avanzati dei testi (class="adv" o tag <adv>) vengono spenti via CSS da body.simple; e le sigle che restano
 // diventano parole semplici (plainify), con le etichette che devono cambiare del tutto nella variante @simple
@@ -132,6 +133,7 @@ function applyI18n(){
   if(btn){btn.querySelector('use').setAttribute('href','#flag-'+lang);btn.querySelector('.lang-code').textContent=lang.toUpperCase();btn.setAttribute('aria-label',m.name);}
   document.querySelectorAll('#lang-menu li').forEach(li=>{const on=li.dataset.lang===lang;li.classList.toggle('is-on',on);li.setAttribute('aria-selected',String(on));});
   document.body.classList.toggle('kid',kidMode);
+  document.body.classList.toggle('gomulu',GOMULU);
   const kb=$('kid-btn');if(kb)kb.setAttribute('aria-pressed',String(kidMode));
   document.body.classList.toggle('simple',simpleView);
   const sb=$('simple-btn');if(sb)sb.setAttribute('aria-pressed',String(simpleView));

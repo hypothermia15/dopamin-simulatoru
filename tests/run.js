@@ -16,7 +16,7 @@ const sandbox={console,performance,Math:Object.assign(Object.create(Math),{rando
 vm.createContext(sandbox);
 for(const f of ['js/util.js','js/model.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),sandbox,{filename:f});
 const G=expr=>vm.runInContext(expr,sandbox);   // evaluate inside the model's scope
-const M=G('({setGeometry,resetSim,setMode,setAge,setStimulus,setSpeed,update,startCaffeine,startMph,startExercise,toggleScroll,startSubst,thresholdNow,releaseMult,datBlock,datSpeedMult,threshMult,sleepMult,synthMult,supply,ageFactor,effectiveD2,baseD2,baseD2Of,passPct})');
+const M=G('({setGeometry,resetSim,setMode,setAge,setStimulus,setSpeed,update,startCaffeine,startMph,startExercise,toggleScroll,startSubst,startMed,thresholdNow,releaseMult,datBlock,datSpeedMult,threshMult,sleepMult,synthMult,supply,ageFactor,effectiveD2,baseD2,baseD2Of,passPct})');
 M.setGeometry(1000,520);
 
 // ── helpers ──
@@ -176,7 +176,7 @@ ok('at full stimulus the passed share reaches 100',G('passPct()')===100,G('passP
 
 // ── F. invariants after a long mixed run ──
 section('F. invariants');
-reset({stim:0.5,speed:2});M.startCaffeine();M.startMph();M.startExercise();M.toggleScroll();for(const k of ['nic','can','alc','coc','met'])M.startSubst(k);run(60);M.toggleScroll();run(60);s=S();
+reset({stim:0.5,speed:2});M.startCaffeine();M.startMph();M.startExercise();M.toggleScroll();for(const k of ['nic','can','alc','coc','met'])M.startSubst(k);for(const k of ['mphx','atx','gua','aps'])M.startMed(k);run(60);M.toggleScroll();run(60);s=S();
 const finite=Object.values(s).every(v=>typeof v!=='number'||Number.isFinite(v));
 ok('no NaN/Infinity in the state',finite);ok('particles within MAX_P',s.parts<=G('MAX_P'),s.parts);ok('reserve within 0..100',s.ves>=0&&s.ves<=100,fmt(s.ves));ok('D2 sensitivity within 0.3..1',s.sens>=0.3&&s.sens<=1,fmt(s.sens));ok('sleep debt within 0..1',s.debt>=0&&s.debt<=1,fmt(s.debt));ok('counters non-negative',[s.total,s.fires,s.misses,s.comt,s.lost,s.maob].every(v=>v>=0));
 
@@ -220,5 +220,11 @@ section('H. drawing');
 const rs=require('./render.js').check(root);
 ok(`render smoke test: ${rs.scenes||0} scenes (both views, large and tiny canvas, every hover key) draw without throwing`,rs.problems.length===0,rs.problems.slice(0,3).join('; '));
 
+// medicines added in the Turkish adaptation (illustrative values)
+reset({mode:'adhd',stim:0.1});run(5);M.startMed('mphx');run(2);s=S();ok('extended-release methylphenidate ramps up',s.block>0.05&&s.block<0.30,fmt(s.block));run(15);s=S();within('extended-release methylphenidate: DAT1 block 70%',s.block,0.69,0.71);within('extended-release methylphenidate: DAT1 speed x0.4',s.dsp,0.39,0.41);
+G('meds.mphx.t=0.1;');run(1);s=S();within('extended-release methylphenidate: milder rebound x1.15',s.dsp,1.14,1.16);
+reset({mode:'adhd',stim:0.1});run(5);M.startMed('atx');run(10);s=S();ok('atomoxetine: slow rise (below full after 10 s)',s.block>0.03&&s.block<0.15,fmt(s.block));run(40);s=S();within('atomoxetine: reuptake block 35%',s.block,0.34,0.36);
+reset({stim:0.1});run(5);M.startMed('gua');run(25);s=S();const thrOn=s.thr;within('guanfacine: no DAT1 block',s.block,0,0.001);within('guanfacine: threshold multiplier x0.85',G('threshMult()'),0.84,0.86);G('meds.gua.t=0;');within('guanfacine: threshold x0.85 against the same state without it',thrOn/S().thr,0.84,0.86);
+reset({stim:0.3});run(5);const d2a=S().d2;M.startMed('aps');run(10);s=S();ok('antipsychotic: about 70% of D2 occupied',s.d2<=Math.round(d2a*0.3)+1&&s.d2>=2,`${s.d2} of ${d2a}`);ok('antipsychotic: sensitivity itself unchanged',s.sens>0.99,fmt(s.sens));G('meds.aps.t=0.1;');run(1);s=S();ok('antipsychotic ends: D2 back',s.d2===d2a,`${s.d2} of ${d2a}`);
 console.log(`\n${checks-fails}/${checks} checks passed (seed ${seed}${verbose?'':', --verbose for every measurement'})`);
 process.exit(fails?1:0);

@@ -46,7 +46,7 @@ function check(root){
   for(const sc of scenes){
     try{
       G(`simpleView=${sc.simple};setGeometry(${sc.w},${sc.h});W=${sc.w};H=${sc.h};ready=true;resetSim();setSpeed(1);setMode('adhd');setStimulus(0.6);`);
-      G("startCaffeine();startMph();startExercise();toggleScroll();for(const k of ['nic','can','alc','coc','met'])startSubst(k);sleepDebt=0.7;");
+      G("startCaffeine();startMph();startExercise();toggleScroll();for(const k of ['nic','can','alc','coc','met'])startSubst(k);for(const k of ['mphx','atx','gua','aps'])startMed(k);sleepDebt=0.7;");
       G('for(let i=0;i<180;i++)update(1/60);');
       G('render();');
       // every hover target, including the ones with a particle attached

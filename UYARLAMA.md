@@ -79,6 +79,15 @@ Uyarlamada eklenen ilaçlar için özgün çizimler yapıldı; özgün eserin ç
 - Kanvastaki reseptör etiketi ilaç varken "boş/toplam" yazar.
 - "Diğer ilaçlar" kartında emoji yerine `img/med-*.svg` simgeleri (uyarlayanın çizimi, depo lisansı altında).
 
+## 24 Kasım 2026: NEJM derlemesinden iki ek cümle
+
+Buitelaar JK, Newcorn JH. Adult Attention Deficit-Hyperactivity Disorder. N Engl J Med 2026;395(15):1519-1528, doi:10.1056/NEJMcp2516040 (künye PubMed kaydıyla doğrulandı).
+
+- "DEHB bir dopamin eksikliği değildir" notuna: derlemenin nörokimya özeti (dopamin ve noradrenalin etkinliğinde ya da sinyalinde azalma, serotonerjik düzenekler rol oynayabilir).
+- "Ekran ve oyun" notuna: ödül işleme tanımı (küçük, hemen gelen ödülü büyük, geciken ödüle yeğleme).
+
+Doğrulanmayan: iki ifade de makaledeki şekilden alındı. Şekil, uyarlayanın paylaştığı ekran görüntüsünden okundu; tam metin okunmadı. Şekil kopyalanmadı.
+
 ## Kaynaklar
 
 "Model ve gerçeklik" sayfasındaki on kaynak özgün yazarın seçimidir. Künyeleri (dergi, yıl, cilt, ilk sayfa, ilk yazar) Kasım 2026'da PubMed kayıtlarıyla eşleştirildi; metinlerdeki sayısal aktarımlar tek tek kaynak makalelerle karşılaştırılmadı.

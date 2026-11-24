@@ -208,3 +208,11 @@ footer.credits .brand-name small{font-weight:600;color:var(--dim);margin-inline-
 .doc .adapt-sec li{margin-bottom:8px}
 .doc .adapt-src{font-size:.82rem;color:var(--dim)}
 footer.credits #adapt-credit{flex-basis:100%;text-align:center;line-height:1.5}
+
+/* Türkçe uyarlama: 'Diğer ilaçlar' kartında emoji yerine çizim simgeleri (kanvastaki işaretlerle aynı dil) */
+#card-meds .pu .in i{font-size:0;width:30px;height:30px;background-position:center;background-size:contain;background-repeat:no-repeat}
+#btn-mphx .in i{background-image:url(../img/med-mphx.svg)}
+#btn-atx .in i{background-image:url(../img/med-atx.svg)}
+#btn-gua .in i{background-image:url(../img/med-gua.svg)}
+#btn-aps .in i{background-image:url(../img/med-aps.svg)}
+#btn-ari .in i{background-image:url(../img/med-ari.svg)}

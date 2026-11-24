@@ -69,6 +69,16 @@ Doğrulanmayanlar: kaynakların yalnızca PubMed özetleri okundu, tam metinler 
 
 Dosyalar: `js/model.js` (`MEDS.ari`, `MPH_DOSE`, `syncDrugReceptors()`, `freeD2()`, `setMphDose()`), `js/render.js`, `js/ui.js`, `index.html`, `css/style.css`, `i18n/*.js` (13 yeni anahtar, `t.aps.b` yeniden yazıldı), `js/uyarlama.js`, `tests/run.js` (toplam 148 denetim).
 
+## 24 Kasım 2026: ilaç görselleri
+
+Uyarlamada eklenen ilaçlar için özgün çizimler yapıldı; özgün eserin çizimlerine dokunulmadı.
+
+- Reseptörde antipsikotik: dolu, koyu çizgili tıkaç. Aripiprazol: yarısı dolu tıkaç ve hücreye giden küçük kıvılcım (kısmi uyarı). Dopamin işgal edilmiş reseptörden sekerken kısa bir kalkan yayı yanar (`drawDrugPlug`, `ariSpark`).
+- Taşıyıcıda en güçlü blokajı yapan ilaç rengi ve işareti belirler (`datBlocker`): uzun etkili metilfenidatta kalan süreyi gösteren halka, atomoksetinde kesikli çizgi.
+- Guanfasinde alıcı nöronun kenarında kesikli lila çizgi; eşik çentiği lilaya döner ve eşiğin ne kadar indiğini bir ok gösterir.
+- Kanvastaki reseptör etiketi ilaç varken "boş/toplam" yazar.
+- "Diğer ilaçlar" kartında emoji yerine `img/med-*.svg` simgeleri (uyarlayanın çizimi, depo lisansı altında).
+
 ## Kaynaklar
 
 "Model ve gerçeklik" sayfasındaki on kaynak özgün yazarın seçimidir. Künyeleri (dergi, yıl, cilt, ilk sayfa, ilk yazar) Kasım 2026'da PubMed kayıtlarıyla eşleştirildi; metinlerdeki sayısal aktarımlar tek tek kaynak makalelerle karşılaştırılmadı.

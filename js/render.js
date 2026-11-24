@@ -152,7 +152,7 @@ function drawTerminal(){
 }
 
 function drawPostCells(){
-  const t=now,thresh=thresholdNow();
+  const t=now,thresh=thresholdNow(),gua=medLevel('gua');
   for(let i=0;i<postNeurons.length;i++){
     const {x0,x1,n,ncy,rx,ry,gx:cx,R}=postGeom(i);
     ctx.beginPath();
@@ -171,6 +171,7 @@ function drawPostCells(){
     // Scarica: bordo azzurro con alone (l'ombra va sul tratto, non sul riempimento quasi trasparente, altrimenti non si vede)
     if(lit>.01){ctx.save();ctx.shadowColor=C.active;ctx.shadowBlur=(14+22*lit)*lit;ctx.strokeStyle=`rgba(0,229,255,${.9*lit})`;ctx.lineWidth=5;ctx.stroke();ctx.restore();}
     ctx.strokeStyle='#0b1522';ctx.lineWidth=2;ctx.stroke();
+    if(gua>.01){ctx.save();ctx.shadowColor=C.gua;ctx.shadowBlur=10*gua;ctx.strokeStyle=hexA(C.gua,.55*gua);ctx.lineWidth=1.6;ctx.setLineDash([2,7]);ctx.lineDashOffset=-t*6;ctx.stroke();ctx.restore();}   // guanfacina: agisce sul neurone ricevente
     // Indicatore a ciambella su scala fissa (0 … 2,5 × soglia base). L'arco sale con il segnale; la tacca è la soglia
     // attuale e si sposta con debito di sonno (sale), caffeina (scende) e postumi (sale). Quando l'arco raggiunge la
     // tacca il neurone diventa ricettivo: l'arco si fa giallo (lampo verso il bianco nell'istante del superamento).
@@ -187,7 +188,12 @@ function drawPostCells(){
     const ca=Math.cos(ta),sa=Math.sin(ta),t0=R-half-3,t1=R+half+3;
     ctx.save();ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(cx+ca*t0,ncy+sa*t0);ctx.lineTo(cx+ca*t1,ncy+sa*t1);ctx.strokeStyle='rgba(5,9,16,.9)';ctx.lineWidth=5.5;ctx.stroke();
-    ctx.shadowColor='rgba(255,255,255,.85)';ctx.shadowBlur=6;ctx.strokeStyle='#ffffff';ctx.lineWidth=2.5;ctx.stroke();
+    const notch=mixHex('#ffffff',C.gua,gua);
+    ctx.shadowColor=hexA(notch,.85);ctx.shadowBlur=6;ctx.strokeStyle=notch;ctx.lineWidth=2.5;ctx.stroke();
+    if(gua>.01){const base=-Math.PI/2+6.283*(thresh/(1-(1-MEDS.gua.thresh)*gua)/scale);   // dove sarebbe la soglia senza guanfacina
+      ctx.shadowBlur=0;ctx.beginPath();ctx.arc(cx,ncy,R+half+4,ta,base);ctx.strokeStyle=hexA(C.gua,.8*gua);ctx.lineWidth=1.6;ctx.stroke();
+      const bx=cx+Math.cos(ta)*(R+half+4),by=ncy+Math.sin(ta)*(R+half+4),tx=-Math.sin(ta),ty=Math.cos(ta);
+      ctx.beginPath();ctx.moveTo(bx+tx*5+ca*3,by+ty*5+sa*3);ctx.lineTo(bx,by);ctx.lineTo(bx+tx*5-ca*3,by+ty*5-sa*3);ctx.stroke();}   // freccia: la soglia è scesa
     ctx.restore();
     if(R>=22){
       const inner=2*(R-half)-4;
@@ -218,16 +224,37 @@ function drawPostCells(){
     ctx.moveTo(2,-5.5);ctx.lineTo(-2.5,-5.5);ctx.moveTo(2,5.5);ctx.lineTo(-2.5,5.5);
     ctx.strokeStyle=r.drug?C[r.drug]:r.occupied?C.dopa:flash>.1?`rgba(0,255,136,${Math.min(1,flash)})`:C.d2;
     ctx.lineWidth=r.occupied?2.5:1.8;ctx.stroke();
-    if(r.drug){ctx.fillStyle=C[r.drug];ctx.globalAlpha=r.drug==='ari'?.75:1;ctx.fillRect(-1.5,-3,5,6);ctx.globalAlpha=1;}   // recettore occupato dal farmaco (adattamento turco)
+    if(r.drug)drawDrugPlug(r);   // recettore occupato dal farmaco (adattamento turco)
     if(r.occupied){ctx.beginPath();ctx.arc(1.5,0,2.6,0,6.283);ctx.fillStyle=C.dopa;ctx.fill();}
     ctx.restore();
   }
 }
 
+// Farmaci sui recettori (adattamento turco). Antipsicotico: tappo pieno e inerte, con una barra scura.
+// Aripiprazolo: tappo mezzo pieno (agonista parziale) che ogni tanto manda una piccola scintilla nella cellula.
+// Uno scudo breve si accende verso la fessura quando una molecola di dopamina rimbalza.
+function drawDrugPlug(r){
+  const col=C[r.drug],bump=Math.max(0,r.bump||0)/.28,spark=Math.max(0,r.spark||0)/.35;
+  ctx.save();
+  if(spark>0){ctx.shadowColor=col;ctx.shadowBlur=10*spark;}
+  ctx.beginPath();ctx.moveTo(-3.5,-3.2);ctx.lineTo(1.5,-4.2);ctx.arc(1.5,0,4.2,-Math.PI/2,Math.PI/2);ctx.lineTo(-3.5,3.2);ctx.closePath();
+  if(r.drug==='ari'){ctx.fillStyle=hexA(col,.28+.5*spark);ctx.fill();ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.stroke();
+    ctx.save();ctx.clip();ctx.fillStyle=col;ctx.fillRect(-4,0,10,5);ctx.restore();}
+  else{ctx.fillStyle=col;ctx.fill();ctx.beginPath();ctx.moveTo(-1.2,-2.6);ctx.lineTo(-1.2,2.6);ctx.strokeStyle='rgba(20,12,0,.75)';ctx.lineWidth=1.6;ctx.stroke();}
+  ctx.restore();
+  if(bump>0){ctx.beginPath();ctx.arc(1,0,9+3*(1-bump),Math.PI*.72,Math.PI*1.28);ctx.strokeStyle=hexA(col,.9*bump);ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';}
+}
+
+// Quale farmaco occupa i trasportatori in questo momento (il blocco più forte dà colore e segno)
+function datBlocker(){
+  const c=[[mphActive?MPH_DOSE[mphDose].block:0,'mph'],[subst.coc.t>0?SUBST.coc.datBlock:0,'coc'],[subst.met.t>0?SUBST.met.datBlock:0,'met'],[MEDS.mphx.datBlock*medLevel('mphx'),'mphx'],[MEDS.atx.datBlock*medLevel('atx'),'atx']];
+  let best=c[0];for(const x of c)if(x[0]>best[0])best=x;return best[0]>0?best[1]:'mph';
+}
+
 function drawDAT1(){
   const t=now,sActive=sprite(C.dat,4,14);
   // Trasportatori bloccati (metilfenidato o cocaina): spenti e con una sbarra del colore della sostanza
-  const blk=datBlock(),blkColor=subst.coc.t>0?C.coc:subst.met.t>0?C.met:(!mphActive&&meds.mphx.t<=0&&meds.atx.t>0)?C.atx:C.mph,sBlk=blk>0?sprite(blkColor,3,13):null;
+  const blk=datBlock(),blkKind=datBlocker(),blkColor=C[blkKind],sBlk=blk>0?sprite(blkColor,3,13):null;
   for(const d of dat1s){ctx.save();
     const act=d.state==='reaching'||d.state==='pulling',occupied=d.state==='blocked';
     if(sBlk)blit(sBlk,d.x,d.y,occupied?.7:.25);   // occupato dal farmaco adesso: alone più forte del colore della sostanza
@@ -235,7 +262,9 @@ function drawDAT1(){
     roundRect(d.x-7,d.y-9,13,18,4);ctx.fillStyle=act?'#3a1d6e':'#241447';ctx.fill();
     ctx.strokeStyle=act?'#c98cff':C.dat;ctx.lineWidth=1.5;ctx.stroke();
     ctx.beginPath();ctx.moveTo(d.x-1,d.y-5);ctx.lineTo(d.x-1,d.y+5);ctx.strokeStyle=act?'#e9d5ff':'#7a4fc0';ctx.lineWidth=2;ctx.stroke();
-    if(occupied){ctx.beginPath();ctx.moveTo(d.x-9,d.y+10);ctx.lineTo(d.x+8,d.y-10);ctx.strokeStyle=blkColor;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';}   // sbarrato solo chi è davvero occupato dal farmaco
+    if(occupied){ctx.beginPath();ctx.moveTo(d.x-9,d.y+10);ctx.lineTo(d.x+8,d.y-10);ctx.strokeStyle=blkColor;ctx.lineWidth=2.5;ctx.lineCap='round';
+      if(blkKind==='atx')ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);ctx.lineCap='butt';
+      if(blkKind==='mphx'){ctx.beginPath();ctx.arc(d.x-.5,d.y,11.5,-Math.PI*.5,-Math.PI*.5+6.283*(meds.mphx.t/MEDS.mphx.dur));ctx.strokeStyle=hexA(blkColor,.75);ctx.lineWidth=1.4;ctx.stroke();}}   // anello = quanto resta del rilascio prolungato   // sbarrato solo chi è davvero occupato dal farmaco
     if(d.arm>0&&d.target){const dx=d.target.x-d.x,dy=d.target.y-d.y,dist=Math.max(1,Math.hypot(dx,dy));
       const armLen=d.arm*Math.min(CLEFT.w+40,dist),tipX=d.x+dx/dist*armLen,tipY=d.y+dy/dist*armLen;
       ctx.setLineDash([5,4]);ctx.lineDashOffset=d.state==='pulling'?t*50:-t*50;
@@ -299,7 +328,9 @@ function drawFX(){
   ctx.lineWidth=1.5;
   for(const f of pops){const k=f.age/f.dur,r=f.r0+(f.r1-f.r0)*k;ctx.beginPath();ctx.arc(f.x,f.y,r,0,6.283);ctx.strokeStyle=hexA(f.color,(1-k)*.8);ctx.stroke();}
   const sp=sprite(C.recept,3,10);
+  const spW=sprite(C.ari,1.8,6);
   for(const u of pulses){const k=u.age/.45,{ncy,gx}=postGeom(u.ni);
+    if(u.weak){const e=k*k*(3-2*k);blit(spW,u.x+(gx-u.x)*e,u.y+(ncy-u.y)*e,(1-k*.6)*.8);continue;}   // aripiprazolo: impulso piccolo, senza anello
     if(k<.6){const kk=k/.6;ctx.beginPath();ctx.arc(u.x,u.y,4+16*kk,0,6.283);ctx.strokeStyle=`rgba(0,255,136,${(1-kk)*.7})`;ctx.stroke();}
     const e=k*k*(3-2*k);blit(sp,u.x+(gx-u.x)*e,u.y+(ncy-u.y)*e,1-k*.6);}
 }
@@ -324,7 +355,8 @@ function drawLabels(){
   // e come ultima risorsa le sole sigle (mai nella vista semplificata, che non ne ha)
   const n=effectiveD2(),items=[{t:T('cv.dat1'),s:'DAT1',x:PRE.w+12,al:'left',c:'rgba(190,120,255,.85)'}];
   if(!simpleView)items.push({t:T('cv.comt'),s:'COMT',x:CLEFT.x+CLEFT.w/2,al:'center',c:'rgba(255,136,51,.85)'});
-  items.push({t:T('cv.d2',{n}),s:'D2 · '+n,x:CLEFT.x+CLEFT.w-8,al:'right',c:'rgba(255,204,0,.85)'});
+  const nTxt=freeD2()<n?freeD2()+'/'+n:n;   // con un farmaco sui recettori: liberi/totali
+  items.push({t:T('cv.d2',{n:nTxt}),s:'D2 · '+nTxt,x:CLEFT.x+CLEFT.w-8,al:'right',c:'rgba(255,204,0,.85)'});
   // Priorità quando lo spazio manca: carattere fino a 9 px, poi senza l'etichetta dell'enzima (i Pac-Man si spiegano da
   // soli e stanno in legenda), e solo alla fine le sigle sole, che nella vista semplificata non esistono
   let list=items,size=10,short=false;

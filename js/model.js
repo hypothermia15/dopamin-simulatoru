@@ -200,6 +200,9 @@ function syncDrugReceptors(){
     if(d&&r.particle){r.particle.state='free';r.particle.timer=0;r.particle.immune=0.4;r.particle=null;r.occupied=false;}
     r.drug=d;}
 }
+// Scintilla dell'aripiprazolo: uno dei recettori occupati manda nella cellula un impulso piccolo (solo grafica)
+function ariSpark(n){const ni=postNeurons.indexOf(n),c=receptors.filter(r=>r.ni===ni&&r.drug==='ari');if(!c.length)return;
+  const r=c[Math.floor(Math.random()*c.length)];r.spark=0.35;if(pulses.length<60)pulses.push({x:r.x,y:r.y,ni,age:0,weak:true});}
 function freeD2(){return effectiveD2()-drugAri-drugAps;}
 
 // COMT: eat = tempo residuo dell'animazione "inghiotte", eaten = molecole mangiate (numerino sotto l'enzima)
@@ -458,7 +461,7 @@ function update(dt){
   for(const r of receptors){if(r.cooldown>0){r.cooldown-=sdt;continue;}if(r.occupied)continue;
     for(const p of particles){if(p.state!=='free'||p.immune>0)continue;
       if(Math.hypot(p.x-r.x,p.y-r.y)<BIND_DIST){
-        if(r.drug){p.vx=-CLEFT.w*4;p.vy=(Math.random()-.5)*CLEFT.w;p.immune=0.4;r.cooldown=0.12;stats.blocked=(stats.blocked||0)+1;break;}   // recettore occupato dal farmaco: rimbalzo senza segnale
+        if(r.drug){p.vx=-CLEFT.w*4;p.vy=(Math.random()-.5)*CLEFT.w;p.immune=0.4;r.cooldown=0.12;r.bump=0.28;stats.blocked=(stats.blocked||0)+1;fx(r.x-4,r.y,C[r.drug],3,11,.3);break;}   // recettore occupato dal farmaco: rimbalzo senza segnale
         r.occupied=true;r.particle=p;p.state='bound';p.x=r.x;p.y=r.y;p.timer=0;
         postNeurons[r.ni].signal+=SIGNAL_PER_BIND;stats.binds++;
         if(pulses.length<60)pulses.push({x:r.x,y:r.y,ni:r.ni,age:0});
@@ -469,7 +472,7 @@ function update(dt){
 
   for(const n of postNeurons){
     // Il debito di sonno alza la soglia e accorcia l'emivita del segnale
-    if(drugAri>0&&Math.random()<MEDS.ari.tone*(drugAri/effectiveD2())*sdt)n.signal+=SIGNAL_PER_BIND*MEDS.ari.intrinsic;   // stimolo parziale dell'aripiprazolo, indipendente dalla dopamina
+    if(drugAri>0&&Math.random()<MEDS.ari.tone*(drugAri/effectiveD2())*sdt){n.signal+=SIGNAL_PER_BIND*MEDS.ari.intrinsic;ariSpark(n);}   // stimolo parziale dell'aripiprazolo, indipendente dalla dopamina
     n.signal*=Math.pow(0.5,sdt/halfLifeNow());
     const was=n.active;
     n.active=n.signal>=thresholdNow();
@@ -553,6 +556,7 @@ function update(dt){
 
   // Effetti visivi
   for(const f of pops)f.age+=dt;pops=pops.filter(f=>f.age<f.dur);
+  for(const r of receptors){if(r.bump>0)r.bump-=dt;if(r.spark>0)r.spark-=dt;}
   for(const u of pulses)u.age+=dt;pulses=pulses.filter(u=>u.age<.45);
   for(const m of motes){m.x+=m.vx*dt;m.y+=m.vy*dt;
     if(m.x<CLEFT.x+4)m.vx=Math.abs(m.vx);if(m.x>CLEFT.x+CLEFT.w-4)m.vx=-Math.abs(m.vx);

@@ -43,10 +43,34 @@
   let aktifPreset=-1,paused=false;
   const history=[[],[]];
   const WINDOW_MS=10000;
+  const frameObservers=[null,null];
 
   function seedFor(i){
     const base=String($('k-seed').value||'20261125');
     return $('k-rng').value==='paired'?base:base+(i===0?'-sol':'-sag');
+  }
+  // Gömülü görünümde görünür içerik #stage'dir. Aynı-origin olduğu için yüksekliği
+  // doğrudan ölçüp iframe'e uygularız; toast/bilgi kartı değişince ResizeObserver yeniler.
+  function frameHeight(i){
+    const frame=$('k-cerceve-'+i);
+    try{
+      const doc=frame.contentDocument,stage=doc&&doc.getElementById('stage');
+      if(!stage)return;
+      const h=Math.ceil(Math.max(stage.scrollHeight,stage.getBoundingClientRect().height))+4;
+      if(h>0&&Math.abs(frame.getBoundingClientRect().height-h)>1)frame.style.height=h+'px';
+    }catch(e){}
+  }
+  function observeFrame(i){
+    const frame=$('k-cerceve-'+i);
+    try{
+      const doc=frame.contentDocument,stage=doc&&doc.getElementById('stage');
+      if(!stage)return;
+      if(frameObservers[i])frameObservers[i].disconnect();
+      frameObservers[i]=new ResizeObserver(()=>frameHeight(i));
+      frameObservers[i].observe(stage);
+      const toasts=doc.getElementById('toasts');if(toasts)frameObservers[i].observe(toasts);
+      frameHeight(i);
+    }catch(e){}
   }
   function ortakUygula(){
     const age=+$('k-yas').value,stim=+$('k-uyaran').value/100,speed=+$('k-hiz').value;
@@ -142,16 +166,9 @@
       const d=W(i).durumOzeti();
       history[i].push({t,alici:d.alici,blok:d.blok,bos:d.bos,depo:d.depo});
       while(history[i].length&&history[i][0].t<t-WINDOW_MS)history[i].shift();
-      renderCurrent(i,d);
+      frameHeight(i);
     });
     renderAverage();
-  }
-  function renderCurrent(i,d){
-    const dl=$('k-oku-'+i);
-    const rows=[['Anlık hazır',d.alici+'%'],['Anlık blokaj',d.blok+'%'],['Boş D2',d.bos+' / '+d.d2],['Depo',d.depo+'%']];
-    if(d.fren>0)rows.push(['Otoreseptör freni','−'+d.fren+'%']);
-    dl.textContent='';
-    rows.forEach(([a,b])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=a;dd.textContent=b;dl.append(dt,dd);});
   }
   function avg(i,key){
     const a=history[i];if(!a.length)return null;
@@ -193,11 +210,16 @@
   $('k-seed').addEventListener('change',syncRestart);
   $('k-durdur').addEventListener('click',()=>setPaused(!paused));
   $('k-sifirla').addEventListener('click',syncRestart);
+  [0,1].forEach(i=>{
+    const frame=$('k-cerceve-'+i);
+    frame.addEventListener('load',()=>observeFrame(i));
+  });
+  window.addEventListener('resize',()=>[0,1].forEach(frameHeight));
 
   let deneme=0;
   const bekle=setInterval(()=>{
     if(hazir(0)&&hazir(1)){
-      clearInterval(bekle);ortakUygula();hazirSec(0);setInterval(snapshot,250);
+      clearInterval(bekle);[0,1].forEach(observeFrame);ortakUygula();hazirSec(0);setInterval(snapshot,250);
     }else if(++deneme>120)clearInterval(bekle);
   },100);
 })();

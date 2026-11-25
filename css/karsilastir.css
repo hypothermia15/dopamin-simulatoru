@@ -43,15 +43,12 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .k-chipler{display:flex;flex-wrap:wrap;gap:5px;min-height:27px;margin-bottom:8px}
 .k-chip{display:inline-flex;align-items:center;padding:3px 8px;border:1px solid #29415f;border-radius:999px;background:var(--kart2);color:#bcd0e5;font-size:.72rem;line-height:1.25}
 .k-chip.model{border-color:rgba(255,226,122,.35);color:#ffe9a4}
-.k-yan iframe{display:block;width:100%;height:min(68vh,660px);border:0;border-radius:10px;background:var(--bg)}
-.k-oku{display:grid;grid-template-columns:1fr auto;gap:3px 12px;margin:10px 0;font-size:.87rem}
-.k-oku dt{color:var(--soluk)}.k-oku dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums;text-align:end}
+.k-yan iframe{display:block;width:100%;min-height:320px;border:0;border-radius:10px;background:var(--bg)}
 .k-ekle{display:flex;gap:8px}.k-ekle select{flex:1;min-width:0}
 .k-ipucu{margin:12px 0 30px;padding:10px 14px;border-radius:10px;border-inline-start:4px solid var(--vurgu);background:var(--kart);min-height:1.5em}
 .k-ipucu:empty{display:none}
 @media (max-width:900px){
   .k-iki{grid-template-columns:1fr}
-  .k-yan iframe{height:560px}
   .k-ozet{position:sticky;top:0;z-index:10;box-shadow:0 8px 22px rgba(0,0,0,.35)}
 }
 @media (max-width:620px){

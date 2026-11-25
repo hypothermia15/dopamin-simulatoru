@@ -48,6 +48,28 @@ test.describe('karsilastir.html smoke tests', () => {
     await expect(page.locator('#k-durdur')).toHaveAttribute('aria-pressed', 'false');
   });
 
+  test('anlık metrik listeleri kaldırılmıştır', async ({ page }) => {
+    await expect(page.locator('.k-oku')).toHaveCount(0);
+    await expect(page.locator('#k-ort-table tbody tr')).toHaveCount(4);
+  });
+
+  for (const width of [1280, 390]) {
+    test(`iframe bilgi kartlarını kesmez (${width}px)`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/karsilastir.html');
+      await expect(page.locator('#k-hazir button').first()).toHaveAttribute('aria-pressed', 'true');
+      await page.waitForTimeout(800);
+      for (const id of ['#k-cerceve-0', '#k-cerceve-1']) {
+        const frame = page.locator(id);
+        const sizes = await frame.evaluate(el => ({
+          iframe: el.getBoundingClientRect().height,
+          content: el.contentDocument.getElementById('stage').scrollHeight
+        }));
+        expect(sizes.iframe).toBeGreaterThanOrEqual(sizes.content - 2);
+      }
+    });
+  }
+
   test('10 saniyelik özet tablosu veri üretir', async ({ page }) => {
     await expect(page.locator('#k-ort-table tbody tr')).toHaveCount(4);
     await page.waitForTimeout(1200);

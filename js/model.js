@@ -615,3 +615,8 @@ function startMed(k){const m=meds[k];if(!m)return;m.t=MEDS[k].dur;if(k==='mphx')
 function setAge(a){age=Math.max(AGE_MIN,Math.min(AGE_MAX,Math.round(a)));effD2=null;}
 function startExercise(){exerciseTimer=EXER_DUR;exerciseActive=true;}
 function togglePause(){paused=!paused;}
+// Karşılaştırma sayfasının iki gömülü kopyayı aynı anda yönetebilmesi için küçük, davranışsız API.
+// Normal simülatör bu işlevleri çağırmaz.
+function setComparisonPaused(on){paused=!!on;}
+function getComparisonPaused(){return paused;}
+function comparisonState(){return {mode,age,stimulus,speed:speedMul,paused,mphDose};}

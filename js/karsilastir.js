@@ -111,6 +111,8 @@
       const actions=taraf[i].actions.slice();
       taraf[i].actions=[];taraf[i].chips=new Map();renderChips(i);
       actions.forEach(k=>uygula(i,k));
+      // Kurulumun kendisi rastgele sayı tüketmiş olabilir; dinamik akışı aynı başlangıç noktasından başlat.
+      if(typeof W(i).setComparisonSeed==='function')W(i).setComparisonSeed(seedFor(i));
     });
     clearHistory();
     requestAnimationFrame(()=>requestAnimationFrame(()=>setPaused(false)));

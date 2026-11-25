@@ -109,7 +109,7 @@
     ortakUygula();
     [0,1].forEach(i=>{
       const actions=taraf[i].actions.slice();
-      taraf[i].chips=new Map();renderChips(i);
+      taraf[i].actions=[];taraf[i].chips=new Map();renderChips(i);
       actions.forEach(k=>uygula(i,k));
     });
     clearHistory();

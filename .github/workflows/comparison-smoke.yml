@@ -1,0 +1,27 @@
+name: Comparison smoke tests
+
+on:
+  pull_request:
+    paths:
+      - 'karsilastir.html'
+      - 'css/karsilastir.css'
+      - 'js/karsilastir.js'
+      - 'js/model.js'
+      - 'js/util.js'
+      - 'tests/**'
+      - 'playwright.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/comparison-smoke.yml'
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm test

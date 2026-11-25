@@ -4,39 +4,70 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yan Yana Karşılaştırma · Dopamin Simülatörü</title>
-<meta name="description" content="Aynı dopamin sinapsını iki ayrı koşulda aynı anda izleyin: ilaçlı ve ilaçsız, kısa ve uzun etkili, antipsikotik ve aripiprazol.">
-<link rel="stylesheet" href="css/karsilastir.css?v=1">
+<meta name="description" content="Aynı dopamin sinapsını iki ayrı koşulda eşleştirilmiş rastgelelikle karşılaştırın.">
+<link rel="stylesheet" href="css/karsilastir.css?v=2">
 </head>
 <body>
 <header class="k-ust">
   <a class="geri" href="index.html">← Simülatöre dön</a>
   <h1>Yan Yana Karşılaştırma</h1>
-  <p>Aynı sinaps, iki ayrı koşul, aynı anda. Bir hazır karşılaştırma seçin ya da iki tarafı kendiniz kurun.</p>
-  <p class="k-uyari"><strong>Uyarlayanın notu.</strong> Bu sayfa Türkçe uyarlamada eklenmiştir. İki taraf ayrı rastgele akışlarla çalışır: küçük farklar rastlantıdan gelebilir, eğilime bakın. Sayılar yaklaşık göstergelerdir, tanı koymaz ve tedavi önermez.</p>
+  <p>Aynı sinapsı iki koşulda, ortak ayarlarla ve varsayılan olarak aynı rastgele başlangıç dizisiyle izleyin.</p>
+  <p class="k-uyari"><strong>Uyarlayanın notu.</strong> Eşleştirilmiş mod iki tarafı aynı seed ile başlatır; müdahaleler modelin akışını farklılaştırdıkça yollar ayrışabilir. Sayılar yaklaşık eğitim göstergeleridir; tanı koymaz, klinik doz veya tedavi önerisi değildir.</p>
 </header>
 <main class="k-govde">
-  <section class="k-hazir" aria-label="Hazır karşılaştırmalar"><h2>Hazır karşılaştırmalar</h2><div id="k-hazir"></div></section>
-  <section class="k-ortak" aria-label="Ortak ayarlar">
-    <label>Uyaran <output id="k-uyaran-deger">50%</output><input type="range" id="k-uyaran" min="0" max="100" value="50"></label>
-    <label>Zaman <output id="k-hiz-deger">2×</output><input type="range" id="k-hiz" min="1" max="8" step="0.5" value="2"></label>
-    <button type="button" id="k-sifirla">İkisini sıfırla</button>
+  <section class="k-hazir" aria-label="Hazır karşılaştırmalar">
+    <h2>Hazır karşılaştırmalar</h2>
+    <div id="k-hazir"></div>
   </section>
+
+  <section class="k-ortak" aria-label="Ortak ayarlar">
+    <label>Yaş <output id="k-yas-deger">30</output><input type="range" id="k-yas" min="5" max="100" value="30"></label>
+    <label>Uyaran <output id="k-uyaran-deger">20%</output><input type="range" id="k-uyaran" min="0" max="100" value="20"></label>
+    <label>Zaman <output id="k-hiz-deger">2×</output><input type="range" id="k-hiz" min="1" max="8" step="0.5" value="2"></label>
+    <label class="k-rng-label">Rastgelelik
+      <select id="k-rng" aria-label="Rastgelelik modu">
+        <option value="paired">Eşleştirilmiş (aynı seed)</option>
+        <option value="independent">Bağımsız</option>
+      </select>
+    </label>
+    <label class="k-seed-label">Seed <input id="k-seed" type="number" value="20261125" step="1" inputmode="numeric"></label>
+    <button type="button" id="k-durdur" aria-pressed="false">⏸ İkisini durdur</button>
+    <button type="button" id="k-sifirla">↻ Senkron yeniden başlat</button>
+  </section>
+
+  <p class="k-doz-not"><strong>Model ayarı:</strong> “Düşük / orta / yüksek” seçenekleri klinik doz karşılığı değildir.</p>
+
+  <section class="k-ozet" aria-labelledby="k-ozet-baslik">
+    <div class="k-ozet-head">
+      <h2 id="k-ozet-baslik">Son 10 saniyelik ortalama</h2>
+      <span id="k-pencere">Veri birikiyor…</span>
+    </div>
+    <div class="k-table-wrap">
+      <table id="k-ort-table">
+        <thead><tr><th>Ölçüm</th><th>Sol</th><th>Sağ</th><th>Δ Sağ − Sol</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="k-iki">
     <article class="k-yan" data-yan="0">
       <h2 class="k-ad" id="k-ad-0">Sol</h2>
-      <iframe id="k-cerceve-0" title="Sol simülasyon" src="index.html?gomulu=1&amp;kid=0&amp;lang=tr" loading="eager"></iframe>
+      <div class="k-chipler" id="k-chipler-0" aria-label="Sol aktif koşullar"></div>
+      <iframe id="k-cerceve-0" title="Sol simülasyon" src="index.html?gomulu=1&amp;kid=0&amp;lang=tr&amp;seed=20261125" loading="eager"></iframe>
       <dl class="k-oku" id="k-oku-0"></dl>
       <div class="k-ekle"><select id="k-sec-0" aria-label="Sol tarafa uygulanacak"></select><button type="button" data-uygula="0">Uygula</button></div>
     </article>
     <article class="k-yan" data-yan="1">
       <h2 class="k-ad" id="k-ad-1">Sağ</h2>
-      <iframe id="k-cerceve-1" title="Sağ simülasyon" src="index.html?gomulu=1&amp;kid=0&amp;lang=tr" loading="eager"></iframe>
+      <div class="k-chipler" id="k-chipler-1" aria-label="Sağ aktif koşullar"></div>
+      <iframe id="k-cerceve-1" title="Sağ simülasyon" src="index.html?gomulu=1&amp;kid=0&amp;lang=tr&amp;seed=20261125" loading="eager"></iframe>
       <dl class="k-oku" id="k-oku-1"></dl>
       <div class="k-ekle"><select id="k-sec-1" aria-label="Sağ tarafa uygulanacak"></select><button type="button" data-uygula="1">Uygula</button></div>
     </article>
   </section>
   <p class="k-ipucu" id="k-ipucu"></p>
 </main>
-<script src="js/karsilastir.js?v=1"></script>
+<script src="js/karsilastir.js?v=2"></script>
 </body>
 </html>
